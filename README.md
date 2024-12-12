@@ -12,21 +12,6 @@ Easy to integrate into any React or Next.js project.
 - **Dark Mode Support**: Automatically adapts to dark mode themes.
 - **Interactive UI**: Hover effect for better visual feedback and a close button for toggling visibility.
 
-## 🔌 Peer Dependencies
-
-Before using the library, ensure the following peer dependencies are installed in your project:
-
-```ts
-"peerDependencies": {
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "tailwindcss": ">=3.0.0"
-},
-"engines": {
-    "node": ">=18"
-}
-```
-
 ## 📦 Installation
 
 Install the package using your preferred package manager:
@@ -40,6 +25,37 @@ yarn add screen-size-overlay
 
 # Using pnpm
 pnpm add screen-size-overlay
+```
+
+## 🛠 TailwindCSS Integration
+
+Ensure that your project uses **TailwindCSS v3.0.0 or higher**. If you don't already have TailwindCSS installed, follow the [TailwindCSS installation guide](https://tailwindcss.com/docs/installation).
+
+To ensure TailwindCSS recognizes the styles used in this library, add the following path to the content array in your `tailwind.config.ts`:
+
+```ts
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    //...
+    "./node_modules/screen-size-overlay/dist/screen-size-overlay.es.js",
+  ],
+};
+```
+
+## 🔌 Peer Dependencies
+
+Before using the library, ensure the following peer dependencies are installed in your project:
+
+```ts
+"peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "tailwindcss": ">=3.0.0"
+},
+"engines": {
+    "node": ">=18"
+}
 ```
 
 ## 💻 Usage
@@ -70,7 +86,7 @@ To use the ScreenSizeOverlay component in a Next.js project, dynamically load th
 import React from 'react'
 import dynamic from 'next/dynamic'
 
-const ScreenSizeOverlay = dynamic(() => import('screen-size-overlay'))
+const ScreenSizeOverlay = dynamic(() => import("screen-size-overlay").then((module) => module.ScreenSizeOverlay))
 
 export default function App() {
   return (
@@ -81,14 +97,6 @@ export default function App() {
   )
 }
 ```
-
-## 🛠 TailwindCSS Integration
-
-Ensure that your project uses **TailwindCSS v3.0.0 or higher**. If you don't already have TailwindCSS installed, follow the [TailwindCSS installation guide](https://tailwindcss.com/docs/installation).
-
-## 🖌 Styling
-
-This component relies on TailwindCSS classes. No additional CSS configuration is required. It supports both light and dark themes out of the box.
 
 ## 🌐 Module Format
 

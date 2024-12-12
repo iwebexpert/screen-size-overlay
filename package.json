@@ -2,7 +2,7 @@
   "name": "screen-size-overlay",
   "description": "A lightweight React component that displays the current screen size and TailwindCSS breakpoint, with responsive hover effects and a close button.",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "files": [
     "dist"
