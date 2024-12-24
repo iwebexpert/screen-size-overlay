@@ -1,51 +1,57 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useWindowSize } from '../hooks/useWindowSize'
+import { useTheme } from '../hooks/useTheme'
+import type { Breakpoints, OverlayPosition, Theme } from '../types'
+import { getCurrentBreakpoint, tailwindBreakpoints } from '../utils/breakpoints'
+import styles from './ScreenSizeOverlay.module.css'
 
-export default function ScreenSizeOverlay() {
-  const [displaySize, setDisplaySize] = useState({ width: 0, height: 0 })
-  const [visible, setVisible] = useState(false)
+interface ScreenSizeOverlayProps {
+  breakpoints?: Breakpoints
+  position?: OverlayPosition
+  theme?: Theme
+  enable?: boolean
+}
 
-  useEffect(() => {
-    function update() {
-      setDisplaySize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }
+export default function ScreenSizeOverlay({
+  breakpoints = tailwindBreakpoints,
+  position = 'bottom-right',
+  theme = 'scheme',
+  enable = true,
+}: ScreenSizeOverlayProps) {
+  const displaySize = useWindowSize()
+  const currentTheme = useTheme(theme)
+  const [visible, setVisible] = useState(true)
 
-    update()
-    setVisible(true)
+  if (!visible || !enable) return null
 
-    window.addEventListener('resize', update)
-
-    return () => {
-      window.removeEventListener('resize', update)
-    }
-  }, [])
-
-  if (!visible) return null
+  const currentBreakpoint = getCurrentBreakpoint(displaySize.width, breakpoints)
+  const positionClass =
+    position === 'relative'
+      ? styles['position-relative']
+      : styles[`position-fixed-${position}`]
 
   return (
-    <div className="fixed z-50 flex items-center gap-2 px-2 py-1 font-mono text-xs font-medium text-white transition-transform bg-gray-700 border border-gray-800 bottom-5 right-5 rounded-xl hover:scale-110 dark:border-gray-500 dark:bg-gray-900">
-      <span>
-        {displaySize.width.toLocaleString()} x{' '}
-        {displaySize.height.toLocaleString()}
-      </span>
-      <div className="w-px h-4 bg-gray-600 dark:bg-gray-700" />
-      <span className="sm:hidden">XS</span>
-      <span className="hidden sm:inline md:hidden">SM</span>
-      <span className="hidden md:inline lg:hidden">MD</span>
-      <span className="hidden lg:inline xl:hidden">LG</span>
-      <span className="hidden xl:inline 2xl:hidden">XL</span>
-      <span className="hidden 2xl:inline">2XL</span>
-      <div className="w-px h-4 bg-gray-600 dark:bg-gray-700" />
-      <button
-        className="text-base text-gray-500 hover:text-gray-400 dark:text-gray-700 dark:hover:text-gray-400"
-        onClick={() => setVisible(false)}
-        aria-label="Close">
-        ×
-      </button>
+    <div className={`${positionClass}`}>
+      <div
+        className={`${styles.overlay} ${
+          currentTheme === 'dark' ? styles.dark : styles.light
+        }`}>
+        <span>
+          {displaySize.width.toLocaleString()} x{' '}
+          {displaySize.height.toLocaleString()}
+        </span>
+        <div className={styles.separator} />
+        <span>{currentBreakpoint}</span>
+        <div className={styles.separator} />
+        <button
+          className={styles.closeButton}
+          onClick={() => setVisible(false)}
+          aria-label="Close">
+          ×
+        </button>
+      </div>
     </div>
   )
 }

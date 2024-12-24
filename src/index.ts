@@ -1,3 +1,1 @@
-import ScreenSizeOverlay from './components/ScreenSizeOverlay'
-
-export { ScreenSizeOverlay }
+export { default as ScreenSizeOverlay } from './components/ScreenSizeOverlay'

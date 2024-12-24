@@ -1,16 +1,22 @@
 # Screen Size Overlay
 
-Screen Size Overlay is a lightweight React component that displays the current screen dimensions and a responsive breakpoint label (e.g., XS, SM, MD) on the screen. This can be especially useful for developers during responsive design testing. Built with TypeScript and TailwindCSS for a modern development experience.
+<img src="docs/images/dark.png" alt="Dark Overlay" />
+
+Screen Size Overlay is a lightweight React component that displays the current screen dimensions and a responsive breakpoint label (e.g., XS, SM, MD) on the screen. This can be especially useful for developers during responsive design testing. Built with TypeScript for a modern development experience.
 
 Easy to integrate into any React or Next.js project.
 
+<p>
+  <img src="docs/images/demo.gif" alt="Overlay Demo" />
+</p>
+
 ## 🚀 Key Features
 
-- **Lightweight**: The library is less than **1KB**.
+- **Lightweight**: The library is less than **2KB**. No dependencies.
 - **Real-Time Screen Dimensions**: Displays the current screen width and height.
 - **TailwindCSS Breakpoints**: Highlights the active TailwindCSS breakpoint (e.g., `XS`, `SM`, `MD`, etc.).
 - **Dark Mode Support**: Automatically adapts to dark mode themes.
-- **Interactive UI**: Hover effect for better visual feedback and a close button for toggling visibility.
+- **Customizable**: Custom breakpoints support.
 
 ## 📦 Installation
 
@@ -27,37 +33,6 @@ yarn add screen-size-overlay
 pnpm add screen-size-overlay
 ```
 
-## 🛠 TailwindCSS Integration
-
-Ensure that your project uses **TailwindCSS v3.0.0 or higher**. If you don't already have TailwindCSS installed, follow the [TailwindCSS installation guide](https://tailwindcss.com/docs/installation).
-
-To ensure TailwindCSS recognizes the styles used in this library, add the following path to the content array in your `tailwind.config.ts`:
-
-```ts
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    //...
-    "./node_modules/screen-size-overlay/dist/screen-size-overlay.es.js",
-  ],
-};
-```
-
-## 🔌 Peer Dependencies
-
-Before using the library, ensure the following peer dependencies are installed in your project:
-
-```ts
-"peerDependencies": {
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "tailwindcss": ">=3.0.0"
-},
-"engines": {
-    "node": ">=18"
-}
-```
-
 ## 💻 Usage
 
 ### Example with React.js
@@ -72,7 +47,7 @@ export default function App() {
   return (
     <div>
       <h1>Welcome to my App</h1>
-      <ScreenSizeOverlay />
+      <ScreenSizeOverlay enable={process.env.NODE_ENV === 'development'} />
     </div>
   )
 }
@@ -86,7 +61,9 @@ To use the ScreenSizeOverlay component in a Next.js project, dynamically load th
 import React from 'react'
 import dynamic from 'next/dynamic'
 
-const ScreenSizeOverlay = dynamic(() => import("screen-size-overlay").then((module) => module.ScreenSizeOverlay))
+const ScreenSizeOverlay = dynamic(() =>
+  import('screen-size-overlay').then((module) => module.ScreenSizeOverlay)
+)
 
 export default function App() {
   return (
@@ -98,9 +75,31 @@ export default function App() {
 }
 ```
 
-## 🌐 Module Format
+## ⚙️ Customization
 
-This library uses **only ESM** (ECMAScript Modules) format for modern JavaScript compatibility.
+```tsx
+<ScreenSizeOverlay
+  // Control visibility (by default true)
+  enable={process.env.NODE_ENV === 'development'}
+  // Position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'relative' (by default 'bottom-right')
+  position="bottom-left"
+  // Theme: 'light' | 'dark' | 'scheme' | 'class' (by default 'scheme')
+  // * 'scheme': Automatically detects the theme based on the user's system preference (`prefers-color-scheme`). Used by default.
+  // * 'class': Automatically determines the theme based on the presence of the `dark` class on the HTML element. This is ideal for Tailwind CSS projects.
+  // * 'light': Forces the overlay to always use the light theme.
+  // * 'dark': Forces the overlay to always use the dark theme.
+  theme="dark"
+  // By default breakpoints from Tailwind CSS
+  breakpoints={{
+    XS: [0, 639],
+    SM: [640, 767],
+    MD: [768, 1023],
+    LG: [1024, 1279],
+    XL: [1280, 1535],
+    '2XL': [1536, Infinity],
+  }}
+/>
+```
 
 ## 📝 License
 
