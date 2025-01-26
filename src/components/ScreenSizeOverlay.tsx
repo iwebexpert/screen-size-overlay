@@ -41,7 +41,7 @@ export default function ScreenSizeOverlay({
       : styles[`position-fixed-${position}`]
 
   return (
-    <div className={`${positionClass}`}>
+    <div className={`${styles.overlayWrapper} ${positionClass}`}>
       <div
         className={`${styles.overlay} ${
           currentTheme === 'dark' ? styles.dark : styles.light

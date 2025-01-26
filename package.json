@@ -1,7 +1,7 @@
 {
   "name": "screen-size-overlay",
   "description": "A lightweight and flexible React component for displaying the current screen size and active breakpoint. Includes presets for Tailwind CSS, Bootstrap (4/5), Foundation, Bulma and MUI with full support for custom breakpoints. Perfect for quick debugging and ensuring responsive UI during development",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "types": "dist/index.d.ts",
   "main": "dist/screen-size-overlay.umd.js",
   "module": "dist/screen-size-overlay.es.js",
@@ -56,7 +56,7 @@
   "homepage": "https://github.com/iwebexpert/screen-size-overlay#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iwebexpert/screen-size-overlay.git"
+    "url": "git+https://github.com/iwebexpert/screen-size-overlay.git"
   },
   "bugs": {
     "url": "https://github.com/iwebexpert/screen-size-overlay/issues"

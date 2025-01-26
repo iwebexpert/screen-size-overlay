@@ -1,3 +1,9 @@
+## 1.2.1 (2025-01-26)
+
+### Fixes
+
+- Added `z-index: 1000` to the wrapper element to ensure proper layering.
+
 ## 1.2.0 (2025-01-26)
 
 ### Features
