@@ -1,0 +1,12 @@
+.separator {
+  width: 1px;
+  height: 16px;
+}
+
+.light .separator {
+  background-color: #bbb;
+}
+
+.dark .separator {
+  background-color: #444;
+}
