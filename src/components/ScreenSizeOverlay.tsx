@@ -4,12 +4,17 @@ import { useState } from 'react'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { useTheme } from '../hooks/useTheme'
 import type { BreakpointsPreset, OverlayPosition, Theme } from '../types'
-import { getCurrentBreakpoint, resolveBreakpoints } from '../utils/breakpoints'
+import {
+  resolveBreakpoints,
+  calculateBreakpointDistances,
+} from '../utils/breakpoints'
 import styles from './ScreenSizeOverlay.module.css'
 
 interface ScreenSizeOverlayProps {
   breakpoints?: BreakpointsPreset
   position?: OverlayPosition
+  showPrevBreakpoint?: boolean
+  showNextBreakpoint?: boolean
   theme?: Theme
   enable?: boolean
 }
@@ -17,6 +22,8 @@ interface ScreenSizeOverlayProps {
 export default function ScreenSizeOverlay({
   breakpoints = 'tailwind',
   position = 'bottom-right',
+  showPrevBreakpoint = true,
+  showNextBreakpoint = true,
   theme = 'scheme',
   enable = true,
 }: ScreenSizeOverlayProps) {
@@ -29,11 +36,14 @@ export default function ScreenSizeOverlay({
   // Resolve breakpoints (string preset or custom object)
   const resolvedBreakpoints = resolveBreakpoints(breakpoints)
 
-  // Determine the current breakpoint
-  const currentBreakpoint = getCurrentBreakpoint(
-    displaySize.width,
-    resolvedBreakpoints
-  )
+  // Calculate distances and breakpoints
+  const {
+    currentBreakpoint,
+    distanceToPrev,
+    distanceToNext,
+    breakpointKeys,
+    currentIndex,
+  } = calculateBreakpointDistances(displaySize.width, resolvedBreakpoints)
 
   const positionClass =
     position === 'relative'
@@ -53,6 +63,29 @@ export default function ScreenSizeOverlay({
         <div className={styles.separator} />
         <span>{currentBreakpoint}</span>
         <div className={styles.separator} />
+
+        {showPrevBreakpoint && distanceToPrev !== null && currentIndex > 0 && (
+          <>
+            <span
+              className={
+                styles.mutedText
+              }>{`-${distanceToPrev}px to ${breakpointKeys[currentIndex - 1]}`}</span>
+            <div className={styles.separator} />
+          </>
+        )}
+
+        {showNextBreakpoint &&
+          distanceToNext !== null &&
+          currentIndex < breakpointKeys.length - 1 && (
+            <>
+              <span
+                className={
+                  styles.mutedText
+                }>{`+${distanceToNext}px to ${breakpointKeys[currentIndex + 1]}`}</span>
+              <div className={styles.separator} />
+            </>
+          )}
+
         <button
           className={styles.closeButton}
           onClick={() => setVisible(false)}

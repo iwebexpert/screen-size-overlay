@@ -4,14 +4,18 @@ function App() {
   return (
     <div>
       <ScreenSizeOverlay
-        // Control visibility (by default true)
+        // Control visibility (default: true)
         enable={process.env.NODE_ENV === 'development'}
         // Position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'relative' (by default 'bottom-right')
         position="bottom-right"
+        // Show the previous breakpoint (default: true)
+        showPrevBreakpoint={true}
+        // Show the next breakpoint (default: true)
+        showNextBreakpoint={true}
         // Theme: 'light' | 'dark' | 'scheme' | 'class' (by default 'scheme')
         theme="dark"
         // By default breakpoints from Tailwind CSS
-        breakpoints="bootstrap" // Use preset 'tailwind', 'bootstrap', 'bootstrap4', 'bootstrap5', 'foundation', 'bulma', 'mui'
+        breakpoints="tailwind" // Use preset 'tailwind', 'bootstrap', 'bootstrap4', 'bootstrap5', 'foundation', 'bulma', 'mui'
 
         // Example of custom breakpoints:
         // breakpoints={{

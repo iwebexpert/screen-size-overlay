@@ -6,7 +6,7 @@ import type { Breakpoints, BreakpointsPreset } from '../types'
  * @param breakpoints - Set of defined breakpoints.
  * @returns The name of the current breakpoint.
  */
-export const getCurrentBreakpoint = (
+const getCurrentBreakpoint = (
   width: number,
   breakpoints: Breakpoints
 ): string => {
@@ -16,6 +16,56 @@ export const getCurrentBreakpoint = (
     }
   }
   return 'Unknown'
+}
+
+/**
+ * Calculates the current breakpoint, previous breakpoint, next breakpoint,
+ * distance to the previous breakpoint, distance to the next breakpoint, and
+ * the index of the current breakpoint given the current screen width.
+ * @param width - Current screen width.
+ * @param resolvedBreakpoints - Set of defined breakpoints.
+ * @returns An object containing the following information:
+ *   - currentBreakpoint: The name of the current breakpoint.
+ *   - prevBreakpoint: The name of the previous breakpoint.
+ *   - nextBreakpoint: The name of the next breakpoint.
+ *   - distanceToPrev: The distance in pixels from the current screen width to the
+ *     previous breakpoint.
+ *   - distanceToNext: The distance in pixels from the current screen width to the next
+ *     breakpoint.
+ *   - breakpointKeys: Array of all the breakpoint keys.
+ *   - currentIndex: The index of the current breakpoint in the breakpointKeys array.
+ */
+export function calculateBreakpointDistances(
+  width: number,
+  resolvedBreakpoints: { [key: string]: [number, number] }
+) {
+  const breakpointKeys = Object.keys(resolvedBreakpoints)
+  const currentBreakpoint = getCurrentBreakpoint(width, resolvedBreakpoints)
+
+  const currentIndex = breakpointKeys.findIndex(
+    (key) => key === currentBreakpoint
+  )
+  const prevBreakpoint =
+    currentIndex > 0
+      ? resolvedBreakpoints[breakpointKeys[currentIndex - 1]][1]
+      : null
+  const nextBreakpoint =
+    currentIndex < breakpointKeys.length - 1
+      ? resolvedBreakpoints[breakpointKeys[currentIndex + 1]][0]
+      : null
+
+  const distanceToPrev = prevBreakpoint !== null ? width - prevBreakpoint : null
+  const distanceToNext = nextBreakpoint !== null ? nextBreakpoint - width : null
+
+  return {
+    currentBreakpoint,
+    prevBreakpoint,
+    nextBreakpoint,
+    distanceToPrev,
+    distanceToNext,
+    breakpointKeys,
+    currentIndex,
+  }
 }
 
 /**
