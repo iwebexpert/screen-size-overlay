@@ -2,7 +2,7 @@
 
 <img src="docs/images/dark.png" alt="Dark Overlay" />
 
-Screen Size Overlay is a lightweight React component that displays the current screen dimensions and a responsive breakpoint label (e.g., XS, SM, MD) on the screen. This can be especially useful for developers during responsive design testing. Built with TypeScript for a modern development experience.
+Screen Size Overlay is a lightweight and flexible React component for displaying the current screen size and active breakpoint. Includes presets for Tailwind CSS, Bootstrap (4/5), Foundation, Bulma and MUI with full support for custom breakpoints. Perfect for quick debugging and ensuring responsive UI during development.
 
 Easy to integrate into any React or Next.js project.
 
@@ -12,11 +12,13 @@ Easy to integrate into any React or Next.js project.
 
 ## 🚀 Key Features
 
-- **Lightweight**: The library is less than **2KB**. No dependencies.
+- **Lightweight**: The library is less than **2KB** (gzip). No dependencies.
+- **Framework-Independent**: The library uses pure CSS and does not depend on any specific CSS framework.
 - **Real-Time Screen Dimensions**: Displays the current screen width and height.
-- **TailwindCSS Breakpoints**: Highlights the active TailwindCSS breakpoint (e.g., `XS`, `SM`, `MD`, etc.).
+- **Multiple Presets**: Includes support for TailwindCSS, Bootstrap (4/5), Foundation, Bulma and MUI breakpoints.
 - **Dark Mode Support**: Automatically adapts to dark mode themes.
 - **Customizable**: Custom breakpoints support.
+- **Responsive Testing Made Easy**: Perfect for developers working on adaptive and responsive designs.
 
 ## 📦 Installation
 
@@ -90,14 +92,17 @@ export default function App() {
   // * 'dark': Forces the overlay to always use the dark theme.
   theme="dark"
   // By default breakpoints from Tailwind CSS
-  breakpoints={{
-    XS: [0, 639],
-    SM: [640, 767],
-    MD: [768, 1023],
-    LG: [1024, 1279],
-    XL: [1280, 1535],
-    '2XL': [1536, Infinity],
-  }}
+  breakpoints="tailwind" // Use preset 'tailwind', 'bootstrap', 'bootstrap4', 'bootstrap5', 'foundation', 'bulma', 'mui'
+
+  // Example of custom breakpoints:
+  // breakpoints={{
+  //   XS: [0, 639],
+  //   SM: [640, 767],
+  //   MD: [768, 1023],
+  //   LG: [1024, 1279],
+  //   XL: [1280, 1535],
+  //   '2XL': [1536, Infinity],
+  // }}
 />
 ```
 

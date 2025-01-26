@@ -11,14 +11,17 @@ function App() {
         // Theme: 'light' | 'dark' | 'scheme' | 'class' (by default 'scheme')
         theme="dark"
         // By default breakpoints from Tailwind CSS
-        breakpoints={{
-          XS: [0, 639],
-          SM: [640, 767],
-          MD: [768, 1023],
-          LG: [1024, 1279],
-          XL: [1280, 1535],
-          '2XL': [1536, Infinity],
-        }}
+        breakpoints="bootstrap" // Use preset 'tailwind', 'bootstrap', 'bootstrap4', 'bootstrap5', 'foundation', 'bulma', 'mui'
+
+        // Example of custom breakpoints:
+        // breakpoints={{
+        //   XS: [0, 639],
+        //   SM: [640, 767],
+        //   MD: [768, 1023],
+        //   LG: [1024, 1279],
+        //   XL: [1280, 1535],
+        //   '2XL': [1536, Infinity],
+        // }}
       />
     </div>
   )

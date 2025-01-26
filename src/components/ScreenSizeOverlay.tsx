@@ -3,19 +3,19 @@
 import { useState } from 'react'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { useTheme } from '../hooks/useTheme'
-import type { Breakpoints, OverlayPosition, Theme } from '../types'
-import { getCurrentBreakpoint, tailwindBreakpoints } from '../utils/breakpoints'
+import type { BreakpointsPreset, OverlayPosition, Theme } from '../types'
+import { getCurrentBreakpoint, resolveBreakpoints } from '../utils/breakpoints'
 import styles from './ScreenSizeOverlay.module.css'
 
 interface ScreenSizeOverlayProps {
-  breakpoints?: Breakpoints
+  breakpoints?: BreakpointsPreset
   position?: OverlayPosition
   theme?: Theme
   enable?: boolean
 }
 
 export default function ScreenSizeOverlay({
-  breakpoints = tailwindBreakpoints,
+  breakpoints = 'tailwind',
   position = 'bottom-right',
   theme = 'scheme',
   enable = true,
@@ -26,7 +26,15 @@ export default function ScreenSizeOverlay({
 
   if (!visible || !enable) return null
 
-  const currentBreakpoint = getCurrentBreakpoint(displaySize.width, breakpoints)
+  // Resolve breakpoints (string preset or custom object)
+  const resolvedBreakpoints = resolveBreakpoints(breakpoints)
+
+  // Determine the current breakpoint
+  const currentBreakpoint = getCurrentBreakpoint(
+    displaySize.width,
+    resolvedBreakpoints
+  )
+
   const positionClass =
     position === 'relative'
       ? styles['position-relative']
