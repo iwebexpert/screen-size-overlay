@@ -12,6 +12,8 @@ function App() {
         showPrevBreakpoint={true}
         // Show the next breakpoint (default: true)
         showNextBreakpoint={true}
+        // Size of the overlay: 'sm' | 'md' | 'lg' | 'xl' (default: 'md')
+        size="md"
         // Theme: 'light' | 'dark' | 'scheme' | 'class' (by default 'scheme')
         theme="dark"
         // By default breakpoints from Tailwind CSS

@@ -8,6 +8,7 @@ import {
   resolveBreakpoints,
   calculateBreakpointDistances,
 } from '../utils/breakpoints'
+import { sizeStyles } from '../utils/styles'
 import styles from './ScreenSizeOverlay.module.css'
 
 interface ScreenSizeOverlayProps {
@@ -15,6 +16,7 @@ interface ScreenSizeOverlayProps {
   position?: OverlayPosition
   showPrevBreakpoint?: boolean
   showNextBreakpoint?: boolean
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   theme?: Theme
   enable?: boolean
 }
@@ -26,6 +28,7 @@ export default function ScreenSizeOverlay({
   showNextBreakpoint = true,
   theme = 'scheme',
   enable = true,
+  size = 'md',
 }: ScreenSizeOverlayProps) {
   const displaySize = useWindowSize()
   const currentTheme = useTheme(theme)
@@ -55,7 +58,8 @@ export default function ScreenSizeOverlay({
       <div
         className={`${styles.overlay} ${
           currentTheme === 'dark' ? styles.dark : styles.light
-        }`}>
+        }`}
+        style={sizeStyles[size]}>
         <span>
           {displaySize.width.toLocaleString()} x{' '}
           {displaySize.height.toLocaleString()}
