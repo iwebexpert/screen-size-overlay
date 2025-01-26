@@ -1,3 +1,9 @@
+## 1.2.2 (2025-01-26)
+
+### Fixes
+
+- Renamed CSS class `overlay-wrapper` to `overlayWrapper` to align with naming conventions for CSS Modules.
+
 ## 1.2.1 (2025-01-26)
 
 ### Fixes
