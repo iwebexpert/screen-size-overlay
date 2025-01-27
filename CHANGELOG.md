@@ -1,3 +1,41 @@
+## 1.3.0 (2025-01-27)
+
+### Features
+
+1. Distance to Previous and Next Breakpoints.
+
+   - **New props**: `showPrevBreakpoint` and `showNextBreakpoint`.
+   - Both default to `true`, enabling the display of distances to adjacent breakpoints.
+
+2. Configurable Overlay Sizes.
+
+   - **New prop**: `size` — select from `'sm'`, `'md'`, `'lg'`, `'xl'`, or `'2xl'` (default: `'lg'`).
+   - Each size adjusts the overlay’s font size and padding.
+
+3. Transparency Control.
+
+   - **New prop**: `transparency` — manages the overlay’s opacity (`0`–`1`).
+   - Default is `1`, meaning fully opaque.
+
+4. Custom Theme Support.
+
+   - **New prop**: `theme`, which can be a preset (`'light'`, `'dark'`, `'scheme'`, `'class'`) or a **custom object**.
+   - Customizable properties include:
+     - `backgroundColor`: Background color of the overlay.
+     - `borderColor`: Border color of the overlay.
+     - `textColor`: Text color in the overlay.
+     - `separatorColor`: Color for separator lines.
+     - `closeButtonColor`: Color for the close button.
+     - `fontFamily`: Font family used within the overlay.
+
+5. Toggleable Close Button.
+
+   - **New prop**: `showCloseButton` — controls whether the close button appears (default: `true`).
+
+6. Improved Documentation.
+   - Updated usage examples to clarify the new props (`showPrevBreakpoint`, `showNextBreakpoint`, `size`, `transparency`, `theme`, and `showCloseButton`).
+   - Enhanced inline comments for better clarity and guidance.
+
 ## 1.2.2 (2025-01-26)
 
 ### Fixes

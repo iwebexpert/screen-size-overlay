@@ -39,7 +39,7 @@ function App() {
             // If true, displays distance to the next breakpoint (default: true)
             showNextBreakpoint={true}
             // If false, hides the close button in the overlay (default: true)
-            showCloseButton={false}
+            showCloseButton={true}
             // Transparency level of the overlay. A value between 0 (fully transparent) and 1 (fully opaque)
             transparency={0.95} // (default: 1)
             // Theme can be one of: 'light' | 'dark' | 'scheme' | 'class' | CustomTheme (by default 'scheme')

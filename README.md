@@ -1,6 +1,14 @@
 # Screen Size Overlay
 
+<p>
 <img src="docs/images/dark.png" alt="Dark Overlay" />
+</p>
+<p>
+<img src="docs/images/custom.png" alt="Custom Overlay" />
+</p>
+<p>
+<img src="docs/images/light.png" alt="Light Overlay" />
+</p>
 
 **Screen Size Overlay** is a lightweight React component that displays the **current screen width and height**, shows distances to the previous and next breakpoints, and supports presets (`Tailwind`, `Bootstrap`, `Foundation`, `Bulma`, `MUI`) or fully custom configurations. Perfect for rapid debugging and ensuring responsive layouts.
 
@@ -139,7 +147,7 @@ Below is a more detailed example demonstrating the various props:
   // If true, displays distance to the next breakpoint (default: true)
   showNextBreakpoint={true}
   // If false, hides the close button in the overlay (default: true)
-  showCloseButton={false}
+  showCloseButton={true}
   // Transparency level of the overlay. A value between 0 (fully transparent) and 1 (fully opaque)
   transparency={0.95} // (default: 1)
   // Theme can be one of: 'light' | 'dark' | 'scheme' | 'class' | CustomTheme (by default 'scheme')
