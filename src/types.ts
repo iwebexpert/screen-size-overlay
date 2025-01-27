@@ -12,7 +12,22 @@ export type BreakpointsPreset =
   | 'mui'
   | Breakpoints
 
-export type Theme = 'light' | 'dark' | 'scheme' | 'class'
+export interface CustomTheme {
+  backgroundColor?: string
+  borderColor?: string
+  textColor?: string
+  separatorColor?: string
+  closeButtonColor?: string
+  fontFamily?: string
+}
+
+export type ThemeStyles = Required<CustomTheme>
+export type Theme = 'light' | 'dark' | 'scheme' | 'class' | CustomTheme
+
+export interface ThemeResult {
+  themeName: 'light' | 'dark' | 'custom'
+  styles: ThemeStyles
+}
 
 export type XPosition = 'left' | 'right'
 export type YPosition = 'top' | 'bottom'

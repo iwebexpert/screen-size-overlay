@@ -13,38 +13,49 @@ import { sizeStyles } from '../utils/styles'
 import styles from './ScreenSizeOverlay.module.css'
 
 interface ScreenSizeOverlayProps {
+  enable?: boolean
   breakpoints?: BreakpointsPreset
   position?: OverlayPosition
   showPrevBreakpoint?: boolean
   showNextBreakpoint?: boolean
-  size?: 'sm' | 'md' | 'lg' | 'xl'
+  showCloseButton?: boolean
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
   transparency?: number
-  customTheme?: {
-    backgroundColor?: string
-    borderColor?: string
-    color?: string
-    separatorColor?: string
-    closeButtonColor?: string
-  }
   theme?: Theme
-  enable?: boolean
+}
+
+function renderBreakpointDistance(
+  distance: number,
+  prefixSign: '+' | '-',
+  breakpointKey: string,
+  separatorColor: string,
+  textClass: string
+) {
+  return (
+    <>
+      <Separator color={separatorColor} />
+      <span className={textClass}>
+        {`${prefixSign}${distance}px to ${breakpointKey}`}
+      </span>
+    </>
+  )
 }
 
 export default function ScreenSizeOverlay({
+  enable = true,
   breakpoints = 'tailwind',
   position = 'bottom-right',
   showPrevBreakpoint = true,
   showNextBreakpoint = true,
+  showCloseButton = true,
   theme = 'scheme',
-  enable = true,
-  size = 'md',
+  size = 'lg',
   transparency = 1,
-  customTheme = {},
 }: ScreenSizeOverlayProps) {
   const displaySize = useWindowSize()
-  const currentTheme = useTheme(theme)
-  const [visible, setVisible] = useState(true)
+  const { styles: themeStyles } = useTheme(theme)
 
+  const [visible, setVisible] = useState(true)
   if (!visible || !enable) return null
 
   // Resolve breakpoints (string preset or custom object)
@@ -64,75 +75,67 @@ export default function ScreenSizeOverlay({
       ? styles['position-relative']
       : styles[`position-fixed-${position}`]
 
-  // Настройки темы
-  const appliedTheme = {
-    backgroundColor:
-      customTheme.backgroundColor ??
-      (currentTheme === 'dark' ? '#2e2e2e' : '#f0f0f0'),
-    borderColor:
-      customTheme.borderColor ?? (currentTheme === 'dark' ? '#555' : '#ccc'),
-    color: customTheme.color ?? (currentTheme === 'dark' ? '#fff' : '#333'),
-    separatorColor:
-      customTheme?.separatorColor ??
-      (currentTheme === 'dark' ? '#444' : '#bbb'),
-    closeButtonColor:
-      customTheme?.closeButtonColor ??
-      (currentTheme === 'dark' ? '#aaa' : '#666'),
-    opacity: transparency,
-  }
+  const prevBreakpointUI =
+    showPrevBreakpoint && distanceToPrev !== null && currentIndex > 0
+      ? renderBreakpointDistance(
+          distanceToPrev,
+          '-',
+          breakpointKeys[currentIndex - 1],
+          themeStyles.separatorColor,
+          styles.mutedText
+        )
+      : null
+
+  const nextBreakpointUI =
+    showNextBreakpoint &&
+    distanceToNext !== null &&
+    currentIndex < breakpointKeys.length - 1
+      ? renderBreakpointDistance(
+          distanceToNext,
+          '+',
+          breakpointKeys[currentIndex + 1],
+          themeStyles.separatorColor,
+          styles.mutedText
+        )
+      : null
 
   return (
     <div className={`${styles.overlayWrapper} ${positionClass}`}>
       <div
-        className={`${styles.overlay} ${
-          currentTheme === 'dark' ? styles.dark : styles.light
-        }`}
+        className={`${styles.overlay}`}
         style={{
           ...sizeStyles[size],
-          backgroundColor: appliedTheme.backgroundColor,
-          borderColor: appliedTheme.borderColor,
-          color: appliedTheme.color,
-          opacity: appliedTheme.opacity,
+          backgroundColor: themeStyles.backgroundColor,
+          borderColor: themeStyles.borderColor,
+          color: themeStyles.textColor,
+          fontFamily: themeStyles.fontFamily,
+          opacity: transparency,
         }}>
         <span>
           {displaySize.width.toLocaleString()} x{' '}
           {displaySize.height.toLocaleString()}
         </span>
-        <Separator color={appliedTheme.separatorColor} />
+        <Separator color={themeStyles.separatorColor} />
         <span>{currentBreakpoint}</span>
-        <Separator color={appliedTheme.separatorColor} />
 
-        {showPrevBreakpoint && distanceToPrev !== null && currentIndex > 0 && (
+        {prevBreakpointUI}
+        {nextBreakpointUI}
+
+        {showCloseButton && (
           <>
-            <span
-              className={
-                styles.mutedText
-              }>{`-${distanceToPrev}px to ${breakpointKeys[currentIndex - 1]}`}</span>
-            <Separator color={appliedTheme.separatorColor} />
+            <Separator color={themeStyles.separatorColor} />
+            <button
+              className={styles.closeButton}
+              style={{
+                fontSize: sizeStyles[size].fontSize,
+                color: themeStyles.closeButtonColor,
+              }}
+              onClick={() => setVisible(false)}
+              aria-label="Close">
+              ×
+            </button>
           </>
         )}
-
-        {showNextBreakpoint &&
-          distanceToNext !== null &&
-          currentIndex < breakpointKeys.length - 1 && (
-            <>
-              <span
-                className={
-                  styles.mutedText
-                }>{`+${distanceToNext}px to ${breakpointKeys[currentIndex + 1]}`}</span>
-              <Separator color={appliedTheme.separatorColor} />
-            </>
-          )}
-
-        <button
-          className={styles.closeButton}
-          style={{
-            color: appliedTheme.closeButtonColor,
-          }}
-          onClick={() => setVisible(false)}
-          aria-label="Close">
-          ×
-        </button>
       </div>
     </div>
   )

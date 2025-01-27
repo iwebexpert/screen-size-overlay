@@ -1,30 +1,54 @@
 import { useEffect, useState } from 'react'
-import type { Theme } from '../types'
+import type { Theme, ThemeResult } from '../types'
+import { lightTheme, darkTheme, generateCustomTheme } from '../utils/styles'
 
-export function useTheme(theme: Theme): 'light' | 'dark' {
-  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light')
+export function useTheme(theme: Theme): ThemeResult {
+  const [currentTheme, setCurrentTheme] = useState<ThemeResult>({
+    themeName: 'light',
+    styles: lightTheme,
+  })
 
   useEffect(() => {
-    if (theme === 'scheme') {
-      // Use prefers-color-scheme
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-      setCurrentTheme(mediaQuery.matches ? 'dark' : 'light')
+    if (typeof theme !== 'string') {
+      setCurrentTheme(generateCustomTheme(theme))
+      return
+    }
 
-      // Subscribe to changes in prefers-color-scheme
-      const handleChange = (event: MediaQueryListEvent) => {
-        setCurrentTheme(event.matches ? 'dark' : 'light')
-      }
-      mediaQuery.addEventListener('change', handleChange)
+    switch (theme) {
+      case 'scheme': {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        const isDark = mediaQuery.matches
 
-      return () => {
-        mediaQuery.removeEventListener('change', handleChange)
+        setCurrentTheme({
+          themeName: isDark ? 'dark' : 'light',
+          styles: isDark ? darkTheme : lightTheme,
+        })
+        break
       }
-    } else if (theme === 'class') {
-      // Check for the presence of the "dark" class on the <html> element
-      const isDarkClass = document.documentElement.classList.contains('dark')
-      setCurrentTheme(isDarkClass ? 'dark' : 'light')
-    } else {
-      setCurrentTheme(theme)
+
+      case 'class': {
+        const isDarkClass = document.documentElement.classList.contains('dark')
+        setCurrentTheme({
+          themeName: isDarkClass ? 'dark' : 'light',
+          styles: isDarkClass ? darkTheme : lightTheme,
+        })
+        break
+      }
+
+      case 'dark':
+        setCurrentTheme({
+          themeName: 'dark',
+          styles: darkTheme,
+        })
+        break
+
+      case 'light':
+      default:
+        setCurrentTheme({
+          themeName: 'light',
+          styles: lightTheme,
+        })
+        break
     }
   }, [theme])
 
