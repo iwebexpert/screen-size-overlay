@@ -58,6 +58,18 @@ export default function ScreenSizeOverlay({
     currentIndex,
   } = calculateBreakpointDistances(displaySize.width, resolvedBreakpoints)
 
+  // Determine the framework title: if breakpoints is a preset string, use it;
+  // otherwise, mark it as 'Custom'
+  const formattedFrameworkTitle =
+    typeof breakpoints === 'string'
+      ? breakpoints.charAt(0).toUpperCase() + breakpoints.slice(1)
+      : 'Custom'
+
+  // Create a string that highlights the current breakpoint by surrounding it with square brackets
+  const highlightedBreakpoints = breakpointKeys
+    .map((bp) => (bp === currentBreakpoint ? `[${bp}]` : bp))
+    .join(', ')
+
   const prevBreakpointUI =
     showPrevBreakpoint && distanceToPrev !== null && currentIndex > 0 ? (
       <BreakpointDistance
@@ -105,7 +117,9 @@ export default function ScreenSizeOverlay({
           {displaySize.height.toLocaleString()}
         </span>
         <Separator color={themeStyles.separatorColor} />
-        <span>{currentBreakpoint}</span>
+        <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
+          {currentBreakpoint}
+        </span>
 
         {prevBreakpointUI}
         {nextBreakpointUI}
