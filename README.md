@@ -27,6 +27,9 @@ Easy to integrate into any `React` or `Next.js` project.
 - **Dark Mode Support**: Adapts automatically to dark mode when applicable.
 - **Customizable**: Easily supply your own custom breakpoints or pass a custom theme object.
 - **Responsive Testing Made Easy**: Ideal for developers fine-tuning adaptive and responsive designs.
+- **New in 1.4.0**:
+  - **Additional Themes**: `'green'`, `'indigo'`, and `'orange'`.
+  - **containerStyles & overlayStyles**: Override container positioning, `z-index`, and overlay styling.
 
 ## 📦 Installation
 
@@ -41,6 +44,9 @@ yarn add screen-size-overlay
 
 # Using pnpm
 pnpm add screen-size-overlay
+
+# Using bun
+bun add screen-size-overlay
 ```
 
 ## 💻 Usage
@@ -92,7 +98,7 @@ export default function App() {
 }
 ```
 
-**Note:** Make sure to wrap the lazy-loaded component in a <Suspense> boundary to handle the fallback UI while the overlay is being loaded.
+**Note:** Make sure to wrap the lazy-loaded component in a `<Suspense>` boundary to handle the fallback UI while the overlay is being loaded.
 
 ### Example with Next.js
 
@@ -116,7 +122,23 @@ export default function App() {
 }
 ```
 
-## ⚙️ Customization
+## 🧩 Props
+
+| **Prop**             | **Type**                                                                                                                            | **Default**      | **Description**                                                                                                                                                                                                                        |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enable`             | `boolean`                                                                                                                           | `true`           | Controls whether the overlay is rendered. Useful for only showing the overlay during development.                                                                                                                                      |
+| `breakpoints`        | `'tailwind'` \| `'bootstrap'` \| `'bootstrap4'` \| `'bootstrap5'` \| `'foundation'` \| `'bulma'` \| `'mui'` \| _Custom Breakpoints_ | `'tailwind'`     | Determines how breakpoints are calculated. You can use one of the presets: `'tailwind'`, `'bootstrap'`, `'bootstrap4'`, `'bootstrap5'`, `'foundation'`, `'bulma'`, or `'mui'`, or provide a custom breakpoints object.                 |
+| `position`           | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'relative'`                                                        | `'bottom-right'` | Defines the placement of the overlay on the screen. If set to `'relative'`, the overlay is positioned according to its parent element.                                                                                                 |
+| `size`               | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'`                                                                                             | `'lg'`           | Determines the overlay’s overall scale (font size, padding, etc.).                                                                                                                                                                     |
+| `showPrevBreakpoint` | `boolean`                                                                                                                           | `true`           | If `true`, shows the distance (in pixels) to the previous breakpoint.                                                                                                                                                                  |
+| `showNextBreakpoint` | `boolean`                                                                                                                           | `true`           | If `true`, shows the distance (in pixels) to the next breakpoint.                                                                                                                                                                      |
+| `showCloseButton`    | `boolean`                                                                                                                           | `true`           | Toggles the close button’s visibility in the overlay.                                                                                                                                                                                  |
+| `transparency`       | `number`                                                                                                                            | `1`              | Sets the overlay’s opacity, ranging from `0` (fully transparent) to `1` (fully opaque).                                                                                                                                                |
+| `containerStyles`    | `React.CSSProperties`                                                                                                               | `{}`             | Custom inline styles applied to the **outer container** of the overlay. Use this to override default positioning (e.g., `zIndex`) or add margins. By default, `zIndex` is set to `1000`.                                               |
+| `overlayStyles`      | `React.CSSProperties`                                                                                                               | `{}`             | Custom inline styles for the **inner overlay** element, allowing you to customize (e.g., `fontSize`, `padding`, etc.).                                                                                                                 |
+| `theme`              | `'light' \| 'dark' \| 'scheme' \| 'class' \| 'green' \| 'indigo' \| 'orange' \| CustomTheme`                                        | `'scheme'`       | The color scheme for the overlay. Presets include `'light'`, `'dark'`, `'scheme'`, `'class'`, `'green'`, `'indigo'`, and `'orange'`. You can also pass a custom theme object with properties like `backgroundColor`, `textColor`, etc. |
+
+## 🛠️ Full Customization
 
 Below is a more detailed example demonstrating the various props:
 
@@ -127,7 +149,9 @@ Below is a more detailed example demonstrating the various props:
   enable={process.env.NODE_ENV === 'development'}
   // Breakpoints used to determine the current responsive behavior.
   // By default, Tailwind CSS breakpoints are used.
-  breakpoints="tailwind" // Use preset 'tailwind', 'bootstrap', 'bootstrap4', 'bootstrap5', 'foundation', 'bulma', 'mui' or provide custom breakpoints
+  // You can use one of the presets: 'tailwind', 'bootstrap', 'bootstrap4', 'bootstrap5', 'foundation', 'bulma', 'mui'
+  // or provide custom breakpoints as an object.
+  breakpoints="tailwind"
   // Example of custom breakpoints:
   // breakpoints={{
   //   XS: [0, 639],
@@ -148,23 +172,46 @@ Below is a more detailed example demonstrating the various props:
   showNextBreakpoint={true}
   // If false, hides the close button in the overlay (default: true)
   showCloseButton={true}
-  // Transparency level of the overlay. A value between 0 (fully transparent) and 1 (fully opaque)
-  transparency={0.95} // (default: 1)
-  // Theme can be one of: 'light' | 'dark' | 'scheme' | 'class' | CustomTheme (by default 'scheme')
-  // theme="dark"
-
+  // Transparency level of the overlay.
+  // A value between 0 (fully transparent) and 1 (fully opaque). Default is 1
+  transparency={0.95}
+  // Theme for the overlay.
+  // Can be one of: 'light', 'dark', 'scheme', 'class', 'green', 'indigo', 'orange', or a custom theme object.
+  // Default is 'scheme'
+  theme="dark"
   // If you want a fully customized color scheme,
   // pass a theme object instead of a preset value:
-  theme={{
-    backgroundColor: '#005204', // Overlay background color
-    borderColor: '#032b00', // Overlay border color
-    textColor: '#ffffff', // Overlay text color
-    separatorColor: '#2e7400', // Color for separators between displayed info
-    closeButtonColor: '#2e7400', // Color for the close button (if showCloseButton=true)
-    fontFamily: 'Arial, sans-serif', // Font family for all text in the overlay
-  }}
+  // theme={{
+  //   backgroundColor: '#005204', // Overlay background color
+  //   borderColor: '#032b00', // Overlay border color
+  //   textColor: '#ffffff', // Overlay text color
+  //   separatorColor: '#2e7400', // Color for separators between displayed info
+  //   closeButtonColor: '#2e7400', // Color for the close button (if showCloseButton=true)
+  //   fontFamily: 'Arial, sans-serif', // Font family for all text in the overlay
+  // }}
+
+  // Custom container styles.
+  // These styles are applied to the outer container of the overlay and can be used to override the default positioning and z-index.
+  // By default, z-index is set to 1000.
+  containerStyles={{ zIndex: 1000, bottom: 16, right: 16 }}
+  // Custom overlay styles.
+  // These styles are applied directly to the overlay element, allowing further customization (e.g., font size, padding).
+  overlayStyles={{ fontSize: '10px' }}
 />
 ```
+
+## ⚡ Why Use screen-size-overlay Instead of a Browser Extension?
+
+Even though the overlay typically runs only in development mode, including it as part of your codebase (instead of relying on a browser extension) offers several key benefits:
+
+1. **Consistent Dev Environment**  
+   With `screen-size-overlay`, every developer sees the same overlay across different machines and browsers, ensuring consistent debugging. Extensions can vary in availability or version, leading to inconsistent testing if each team member has a different setup.
+
+2. **Advanced Customization & Theming**  
+   The overlay is fully configurable through props—letting you define custom breakpoints, themes, and styles. Browser extensions generally provide fixed functionality or limited options, making it difficult to adapt them to specific project needs.
+
+3. **Controlled Integration & Version Tracking**  
+   By adding the overlay to your repository, all changes are documented via version control, making it easy to roll back or see when new features were added. Although you might only enable it in development builds, the code remains part of your project’s lifecycle, ensuring updates or configuration changes are transparent to the whole team.
 
 ## 📝 License
 

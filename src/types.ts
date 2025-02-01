@@ -22,7 +22,15 @@ export interface CustomTheme {
 }
 
 export type ThemeStyles = Required<CustomTheme>
-export type Theme = 'light' | 'dark' | 'scheme' | 'class' | CustomTheme
+export type Theme =
+  | 'light'
+  | 'dark'
+  | 'green'
+  | 'indigo'
+  | 'orange'
+  | 'scheme'
+  | 'class'
+  | CustomTheme
 
 export interface ThemeResult {
   themeName: 'light' | 'dark' | 'custom'

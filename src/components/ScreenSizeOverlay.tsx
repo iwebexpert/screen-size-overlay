@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { useTheme } from '../hooks/useTheme'
 import Separator from './Separator'
+import BreakpointDistance from './BreakpointDistance'
 import type { BreakpointsPreset, OverlayPosition, Theme } from '../types'
 import {
   resolveBreakpoints,
   calculateBreakpointDistances,
 } from '../utils/breakpoints'
-import { sizeStyles } from '../utils/styles'
+import { getPositionStyles, sizeStyles } from '../utils/styles'
 import styles from './ScreenSizeOverlay.module.css'
 
 interface ScreenSizeOverlayProps {
@@ -21,24 +22,9 @@ interface ScreenSizeOverlayProps {
   showCloseButton?: boolean
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
   transparency?: number
+  containerStyles?: CSSProperties
+  overlayStyles?: CSSProperties
   theme?: Theme
-}
-
-function renderBreakpointDistance(
-  distance: number,
-  prefixSign: '+' | '-',
-  breakpointKey: string,
-  separatorColor: string,
-  textClass: string
-) {
-  return (
-    <>
-      <Separator color={separatorColor} />
-      <span className={textClass}>
-        {`${prefixSign}${distance}px to ${breakpointKey}`}
-      </span>
-    </>
-  )
 }
 
 export default function ScreenSizeOverlay({
@@ -51,6 +37,8 @@ export default function ScreenSizeOverlay({
   theme = 'scheme',
   size = 'lg',
   transparency = 1,
+  containerStyles,
+  overlayStyles,
 }: ScreenSizeOverlayProps) {
   const displaySize = useWindowSize()
   const { styles: themeStyles } = useTheme(theme)
@@ -70,37 +58,37 @@ export default function ScreenSizeOverlay({
     currentIndex,
   } = calculateBreakpointDistances(displaySize.width, resolvedBreakpoints)
 
-  const positionClass =
-    position === 'relative'
-      ? styles['position-relative']
-      : styles[`position-fixed-${position}`]
-
   const prevBreakpointUI =
-    showPrevBreakpoint && distanceToPrev !== null && currentIndex > 0
-      ? renderBreakpointDistance(
-          distanceToPrev,
-          '-',
-          breakpointKeys[currentIndex - 1],
-          themeStyles.separatorColor,
-          styles.mutedText
-        )
-      : null
+    showPrevBreakpoint && distanceToPrev !== null && currentIndex > 0 ? (
+      <BreakpointDistance
+        distance={distanceToPrev}
+        prefix="-"
+        breakpointKey={breakpointKeys[currentIndex - 1]}
+        separatorColor={themeStyles.separatorColor}
+        textClass={styles.mutedText}
+      />
+    ) : null
 
   const nextBreakpointUI =
     showNextBreakpoint &&
     distanceToNext !== null &&
-    currentIndex < breakpointKeys.length - 1
-      ? renderBreakpointDistance(
-          distanceToNext,
-          '+',
-          breakpointKeys[currentIndex + 1],
-          themeStyles.separatorColor,
-          styles.mutedText
-        )
-      : null
+    currentIndex < breakpointKeys.length - 1 ? (
+      <BreakpointDistance
+        distance={distanceToNext}
+        prefix="+"
+        breakpointKey={breakpointKeys[currentIndex + 1]}
+        separatorColor={themeStyles.separatorColor}
+        textClass={styles.mutedText}
+      />
+    ) : null
+
+  const defaultContainerStyles: CSSProperties = {
+    zIndex: 1000,
+    ...getPositionStyles(position),
+  }
 
   return (
-    <div className={`${styles.overlayWrapper} ${positionClass}`}>
+    <div style={{ ...defaultContainerStyles, ...containerStyles }}>
       <div
         className={`${styles.overlay}`}
         style={{
@@ -110,6 +98,7 @@ export default function ScreenSizeOverlay({
           color: themeStyles.textColor,
           fontFamily: themeStyles.fontFamily,
           opacity: transparency,
+          ...overlayStyles,
         }}>
         <span>
           {displaySize.width.toLocaleString()} x{' '}

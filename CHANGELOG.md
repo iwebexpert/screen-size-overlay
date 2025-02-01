@@ -1,3 +1,27 @@
+## 1.4.0 (2025-02-01)
+
+### Features
+
+1. New Themes: **green**, **indigo** and **orange**.
+
+   - You can now set the `theme` prop to `'green'`, `'indigo'`, or `'orange'` in addition to the existing `'light'`, `'dark'`, `'scheme'`, `'class'`, or a custom object.
+   - Each new theme has its own background color, border color, text color, separator color, and close button color.
+
+2. Custom Container and Overlay Styles.
+
+   - **New props**: `containerStyles` and `overlayStyles`.
+   - `containerStyles` allows you to override the **default container** (e.g., `z-index`), positioning, or any other CSS properties.
+   - `overlayStyles` lets you fine-tune the **inner overlay** element (e.g., custom `fontSize`, `padding`, etc.).
+
+3. Inline Positioning Styles.
+
+   - The component now uses **inline positioning styles** instead of relying on pre-defined CSS classes.
+   - This change makes it easier to **dynamically override** position-related properties (e.g., `top`, `bottom`, `left`, `right`).
+
+4. Improved Usage Documentation.
+   - Added detailed comments for each prop in the usage example, including notes on **default values** and **customization options**.
+   - Clarified that the default `z-index` for the overlay container is `1000`.
+
 ## 1.3.0 (2025-01-27)
 
 ### Features

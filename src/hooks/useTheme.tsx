@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import type { Theme, ThemeResult } from '../types'
-import { lightTheme, darkTheme, generateCustomTheme } from '../utils/styles'
+import {
+  lightTheme,
+  darkTheme,
+  greenTheme,
+  indigoTheme,
+  orangeTheme,
+  generateCustomTheme,
+} from '../utils/styles'
 
 export function useTheme(theme: Theme): ThemeResult {
   const [currentTheme, setCurrentTheme] = useState<ThemeResult>({
@@ -9,6 +16,7 @@ export function useTheme(theme: Theme): ThemeResult {
   })
 
   useEffect(() => {
+    // If the theme is not a string, assume it's a custom theme object
     if (typeof theme !== 'string') {
       setCurrentTheme(generateCustomTheme(theme))
       return
@@ -16,6 +24,7 @@ export function useTheme(theme: Theme): ThemeResult {
 
     switch (theme) {
       case 'scheme': {
+        // Determine the user's preferred color scheme
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
         const isDark = mediaQuery.matches
 
@@ -27,6 +36,7 @@ export function useTheme(theme: Theme): ThemeResult {
       }
 
       case 'class': {
+        // Use the presence of the 'dark' class on the document element
         const isDarkClass = document.documentElement.classList.contains('dark')
         setCurrentTheme({
           themeName: isDarkClass ? 'dark' : 'light',
@@ -39,6 +49,27 @@ export function useTheme(theme: Theme): ThemeResult {
         setCurrentTheme({
           themeName: 'dark',
           styles: darkTheme,
+        })
+        break
+
+      case 'green':
+        setCurrentTheme({
+          themeName: 'custom',
+          styles: greenTheme,
+        })
+        break
+
+      case 'indigo':
+        setCurrentTheme({
+          themeName: 'custom',
+          styles: indigoTheme,
+        })
+        break
+
+      case 'orange':
+        setCurrentTheme({
+          themeName: 'custom',
+          styles: orangeTheme,
         })
         break
 
