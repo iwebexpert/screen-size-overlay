@@ -1,3 +1,18 @@
+## 1.5.0 (2025-02-02)
+
+### Features
+
+1. **Title Tooltip for Breakpoints**
+   - Added a title tooltip on the current breakpoint element.
+   - The tooltip displays all available breakpoints with the current breakpoint highlighted using square brackets.
+   - It also prefixes the list with the CSS framework name (or "Custom" if applicable), formatted with only the first letter capitalized.
+   - This provides a quick, native hover reference without the need for a custom tooltip component.
+2. **New Modes: `visible`, `auto-hide`, and `auto-compact`**
+   - **`visible`**: Overlay is always shown.
+   - **`auto-hide`**: Overlay appears on resize, then hides automatically after `displayDuration`.
+   - **`auto-compact`**: Only the breakpoint label is shown by default; the full overlay appears on hover or resize.
+   - **`displayDuration`**: Defines how long the full overlay remains visible before hiding in `auto-hide` and `auto-compact` modes.
+
 ## 1.4.0 (2025-02-01)
 
 ### Features

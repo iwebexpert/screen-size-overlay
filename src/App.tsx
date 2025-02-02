@@ -67,6 +67,13 @@ function App() {
             // Custom overlay styles.
             // These styles are applied directly to the overlay element, allowing further customization (e.g., font size, padding).
             // overlayStyles={{ fontSize: '10px' }}
+
+            // New in 1.5.0: Controls when the overlay is shown or hidden
+            // 'visible' (always on), 'auto-hide' (appears on resize, hides after displayDuration), or 'auto-compact' (shows only the breakpoint label unless hovered or resizing).
+            mode="auto-compact"
+            // New in 1.5.0: Time (in ms) the overlay remains visible in 'auto-hide' and 'auto-compact' modes.
+            // Default: 2000 ms
+            displayDuration={4000}
           />
         )}
       </Suspense>

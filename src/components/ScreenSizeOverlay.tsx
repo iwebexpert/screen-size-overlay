@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type CSSProperties } from 'react'
+import { type CSSProperties } from 'react'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { useTheme } from '../hooks/useTheme'
 import Separator from './Separator'
@@ -10,6 +10,7 @@ import {
   resolveBreakpoints,
   calculateBreakpointDistances,
 } from '../utils/breakpoints'
+import { useOverlayVisibility } from '../hooks/useOverlayVisibility'
 import { getPositionStyles, sizeStyles } from '../utils/styles'
 import styles from './ScreenSizeOverlay.module.css'
 
@@ -25,6 +26,8 @@ interface ScreenSizeOverlayProps {
   containerStyles?: CSSProperties
   overlayStyles?: CSSProperties
   theme?: Theme
+  mode?: 'visible' | 'auto-hide' | 'auto-compact'
+  displayDuration?: number
 }
 
 export default function ScreenSizeOverlay({
@@ -39,11 +42,25 @@ export default function ScreenSizeOverlay({
   transparency = 1,
   containerStyles,
   overlayStyles,
+  mode = 'visible',
+  displayDuration = 2000,
 }: ScreenSizeOverlayProps) {
   const displaySize = useWindowSize()
   const { styles: themeStyles } = useTheme(theme)
 
-  const [visible, setVisible] = useState(true)
+  const {
+    visible,
+    setVisible,
+    showFullOverlay,
+    opacity,
+    handleMouseEnter,
+    handleMouseLeave,
+  } = useOverlayVisibility({
+    mode,
+    displayDuration,
+    triggerDependency: `${displaySize.width}-${displaySize.height}`,
+  })
+
   if (!visible || !enable) return null
 
   // Resolve breakpoints (string preset or custom object)
@@ -94,52 +111,73 @@ export default function ScreenSizeOverlay({
       />
     ) : null
 
+  const commonOverlayStyles: CSSProperties = {
+    ...sizeStyles[size],
+    backgroundColor: themeStyles.backgroundColor,
+    borderColor: themeStyles.borderColor,
+    color: themeStyles.textColor,
+    fontFamily: themeStyles.fontFamily,
+    transition: 'opacity 500ms ease',
+    ...overlayStyles,
+  }
+
   const defaultContainerStyles: CSSProperties = {
     zIndex: 1000,
     ...getPositionStyles(position),
   }
 
   return (
-    <div style={{ ...defaultContainerStyles, ...containerStyles }}>
-      <div
-        className={`${styles.overlay}`}
-        style={{
-          ...sizeStyles[size],
-          backgroundColor: themeStyles.backgroundColor,
-          borderColor: themeStyles.borderColor,
-          color: themeStyles.textColor,
-          fontFamily: themeStyles.fontFamily,
-          opacity: transparency,
-          ...overlayStyles,
-        }}>
-        <span>
-          {displaySize.width.toLocaleString()} x{' '}
-          {displaySize.height.toLocaleString()}
-        </span>
-        <Separator color={themeStyles.separatorColor} />
-        <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
-          {currentBreakpoint}
-        </span>
+    <div
+      style={{ ...defaultContainerStyles, ...containerStyles }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}>
+      {mode === 'auto-compact' && !showFullOverlay ? (
+        <div
+          className={`${styles.overlay}`}
+          style={{
+            ...commonOverlayStyles,
+            opacity: transparency,
+          }}>
+          <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
+            {currentBreakpoint}
+          </span>
+        </div>
+      ) : (
+        <div
+          className={`${styles.overlay}`}
+          style={{
+            ...commonOverlayStyles,
+            opacity: opacity * transparency,
+          }}>
+          <span>
+            {displaySize.width.toLocaleString()} x{' '}
+            {displaySize.height.toLocaleString()}
+          </span>
+          <Separator color={themeStyles.separatorColor} />
+          <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
+            {currentBreakpoint}
+          </span>
 
-        {prevBreakpointUI}
-        {nextBreakpointUI}
+          {prevBreakpointUI}
+          {nextBreakpointUI}
 
-        {showCloseButton && (
-          <>
-            <Separator color={themeStyles.separatorColor} />
-            <button
-              className={styles.closeButton}
-              style={{
-                fontSize: sizeStyles[size].fontSize,
-                color: themeStyles.closeButtonColor,
-              }}
-              onClick={() => setVisible(false)}
-              aria-label="Close">
-              ×
-            </button>
-          </>
-        )}
-      </div>
+          {showCloseButton && mode !== 'auto-compact' && (
+            <>
+              <Separator color={themeStyles.separatorColor} />
+              <button
+                className={styles.closeButton}
+                style={{
+                  fontSize: sizeStyles[size].fontSize,
+                  color: themeStyles.closeButtonColor,
+                }}
+                onClick={() => setVisible(false)}
+                aria-label="Close">
+                ×
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   )
 }
