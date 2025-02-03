@@ -9,7 +9,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/screen-size-overlay.es.js",
-      "require": "./dist/screen-size-overlay.umd.js"
+      "require": "./dist/screen-size-overlay.umd.js",
+      "default": "./dist/screen-size-overlay.es.js"
     }
   },
   "files": [
@@ -92,6 +93,6 @@
     "responsive-tools"
   ],
   "license": "MIT",
-  "packageManager": "pnpm@9.15.1",
+  "packageManager": "pnpm@9.15.4",
   "sideEffects": false
 }
