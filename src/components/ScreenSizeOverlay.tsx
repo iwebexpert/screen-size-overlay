@@ -5,7 +5,12 @@ import { useWindowSize } from '../hooks/useWindowSize'
 import { useTheme } from '../hooks/useTheme'
 import Separator from './Separator'
 import BreakpointDistance from './BreakpointDistance'
-import type { BreakpointsPreset, OverlayPosition, Theme } from '../types'
+import type {
+  BreakpointsPreset,
+  OverlayPosition,
+  SupportedLocale,
+  Theme,
+} from '../types'
 import {
   resolveBreakpoints,
   calculateBreakpointDistances,
@@ -13,11 +18,13 @@ import {
 import { useOverlayVisibility } from '../hooks/useOverlayVisibility'
 import { getPositionStyles, sizeStyles } from '../utils/styles'
 import styles from './ScreenSizeOverlay.module.css'
+import { t } from '../utils/locale'
 
 interface ScreenSizeOverlayProps {
   enable?: boolean
   breakpoints?: BreakpointsPreset
   position?: OverlayPosition
+  locale?: SupportedLocale
   showPrevBreakpoint?: boolean
   showNextBreakpoint?: boolean
   showCloseButton?: boolean
@@ -34,6 +41,7 @@ export default function ScreenSizeOverlay({
   enable = true,
   breakpoints = 'tailwind',
   position = 'bottom-right',
+  locale = 'en-US',
   showPrevBreakpoint = true,
   showNextBreakpoint = true,
   showCloseButton = true,
@@ -80,7 +88,7 @@ export default function ScreenSizeOverlay({
   const formattedFrameworkTitle =
     typeof breakpoints === 'string'
       ? breakpoints.charAt(0).toUpperCase() + breakpoints.slice(1)
-      : 'Custom'
+      : t('custom', locale)
 
   // Create a string that highlights the current breakpoint by surrounding it with square brackets
   const highlightedBreakpoints = breakpointKeys
@@ -95,6 +103,7 @@ export default function ScreenSizeOverlay({
         breakpointKey={breakpointKeys[currentIndex - 1]}
         separatorColor={themeStyles.separatorColor}
         textClass={styles.mutedText}
+        locale={locale}
       />
     ) : null
 
@@ -108,6 +117,7 @@ export default function ScreenSizeOverlay({
         breakpointKey={breakpointKeys[currentIndex + 1]}
         separatorColor={themeStyles.separatorColor}
         textClass={styles.mutedText}
+        locale={locale}
       />
     ) : null
 
@@ -139,7 +149,9 @@ export default function ScreenSizeOverlay({
             opacity: transparency,
           }}>
           <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
-            {currentBreakpoint}
+            {currentBreakpoint === 'Unknown'
+              ? t('unknown', locale)
+              : currentBreakpoint}
           </span>
         </div>
       ) : (
@@ -150,12 +162,14 @@ export default function ScreenSizeOverlay({
             opacity: opacity * transparency,
           }}>
           <span>
-            {displaySize.width.toLocaleString()} x{' '}
-            {displaySize.height.toLocaleString()}
+            {displaySize.width.toLocaleString(locale)} x{' '}
+            {displaySize.height.toLocaleString(locale)}
           </span>
           <Separator color={themeStyles.separatorColor} />
           <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
-            {currentBreakpoint}
+            {currentBreakpoint === 'Unknown'
+              ? t('unknown', locale)
+              : currentBreakpoint}
           </span>
 
           {prevBreakpointUI}
@@ -174,8 +188,10 @@ export default function ScreenSizeOverlay({
                     color: themeStyles.closeButtonColor,
                   }}
                   onClick={toggleTheme}
-                  aria-label="Toggle Theme">
-                  {currentMode === 'light' ? 'Light' : 'Dark'}
+                  aria-label={t('toggleTheme', locale)}>
+                  {currentMode === 'light'
+                    ? t('light', locale)
+                    : t('dark', locale)}
                 </button>
               </>
             )}
@@ -190,7 +206,7 @@ export default function ScreenSizeOverlay({
                   color: themeStyles.closeButtonColor,
                 }}
                 onClick={() => setVisible(false)}
-                aria-label="Close">
+                aria-label={t('close', locale)}>
                 ×
               </button>
             </>

@@ -38,6 +38,8 @@ function App() {
             //   '2XL': [1536, Infinity],
             // }}
 
+            // Locale: 'en-US' | 'ru-RU' | 'es-ES' (default: 'en-US')
+            locale="ru-RU"
             // Position of the overlay on the screen: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'relative' (by default 'bottom-right')
             position="bottom-right"
             // Size of the overlay: 'sm' | 'md' | 'lg' | 'xl'| '2xl' (default: 'lg')
@@ -92,7 +94,7 @@ function App() {
 
             // New in 1.5.0: Controls when the overlay is shown or hidden
             // 'visible' (always on), 'auto-hide' (appears on resize, hides after displayDuration), or 'auto-compact' (shows only the breakpoint label unless hovered or resizing).
-            mode="auto-compact"
+            // mode="auto-compact"
             // New in 1.5.0: Time (in ms) the overlay remains visible in 'auto-hide' and 'auto-compact' modes.
             // Default: 2000 ms
             displayDuration={2000}

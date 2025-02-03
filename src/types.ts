@@ -35,3 +35,4 @@ export type Theme =
 export type XPosition = 'left' | 'right'
 export type YPosition = 'top' | 'bottom'
 export type OverlayPosition = `${YPosition}-${XPosition}` | 'relative'
+export type SupportedLocale = 'en-US' | 'ru-RU' | 'es-ES'
