@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { darkTealTheme, lightTealTheme, mergeTheme } from './themes'
 // import ScreenSizeOverlay from './components/ScreenSizeOverlay'
 
 // Lazy-load the overlay component
@@ -9,6 +10,11 @@ const ScreenSizeOverlay = lazy(() =>
 )
 
 function App() {
+  const customLightTealTheme = mergeTheme(lightTealTheme, {
+    backgroundColor: '#b8fcbd',
+    // fontFamily: 'Arial, sans-serif',
+  })
+
   return (
     <div>
       <Suspense fallback={<div>Loading overlay...</div>}>
@@ -45,10 +51,26 @@ function App() {
             // Transparency level of the overlay.
             // A value between 0 (fully transparent) and 1 (fully opaque). Default is 1
             transparency={0.95}
-            // Theme for the overlay.
-            // Can be one of: 'light', 'dark', 'scheme', 'class', 'green', 'indigo', 'orange', or a custom theme object.
-            // Default is 'scheme'
-            theme="dark"
+            // Theme configuration for the overlay.
+            // This can be:
+            // 1. A single CustomTheme object (universal theme),
+            // 2. A dual theme object { light, dark, switchMode, switchModeClassName }
+            //    allowing manual or auto switching between light and dark modes.
+            //
+            // switchMode (default: 'manual'):
+            //   - 'manual': Manually toggle between light and dark themes via a button (if two themes exist).
+            //   - 'scheme': Automatically detects the user's OS color scheme (prefers-color-scheme).
+            //   - 'class': Detects a class (by default 'dark') on <html> or <body> to decide if dark mode is active.
+            // switchModeClassName (optional):
+            //   - If switchMode is 'class', you can specify a custom class here. Defaults to 'dark' if omitted.
+            theme={{
+              light: customLightTealTheme,
+              dark: darkTealTheme,
+              switchMode: 'manual',
+
+              // switchMode: 'class',
+              // switchModeClassName: 'dark',
+            }}
             // If you want a fully customized color scheme,
             // pass a theme object instead of a preset value:
             // theme={{
@@ -73,7 +95,7 @@ function App() {
             mode="auto-compact"
             // New in 1.5.0: Time (in ms) the overlay remains visible in 'auto-hide' and 'auto-compact' modes.
             // Default: 2000 ms
-            displayDuration={4000}
+            displayDuration={2000}
           />
         )}
       </Suspense>

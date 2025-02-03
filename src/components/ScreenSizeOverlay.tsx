@@ -37,7 +37,7 @@ export default function ScreenSizeOverlay({
   showPrevBreakpoint = true,
   showNextBreakpoint = true,
   showCloseButton = true,
-  theme = 'scheme',
+  theme = {},
   size = 'lg',
   transparency = 1,
   containerStyles,
@@ -46,7 +46,7 @@ export default function ScreenSizeOverlay({
   displayDuration = 2000,
 }: ScreenSizeOverlayProps) {
   const displaySize = useWindowSize()
-  const { styles: themeStyles } = useTheme(theme)
+  const { themeStyles, toggleTheme, currentMode, isDualTheme } = useTheme(theme)
 
   const {
     visible,
@@ -160,6 +160,25 @@ export default function ScreenSizeOverlay({
 
           {prevBreakpointUI}
           {nextBreakpointUI}
+
+          {isDualTheme &&
+            toggleTheme &&
+            'switchMode' in theme &&
+            theme.switchMode === 'manual' && (
+              <>
+                <Separator color={themeStyles.separatorColor} />
+                <button
+                  className={styles.closeButton}
+                  style={{
+                    fontSize: sizeStyles[size].fontSize,
+                    color: themeStyles.closeButtonColor,
+                  }}
+                  onClick={toggleTheme}
+                  aria-label="Toggle Theme">
+                  {currentMode === 'light' ? 'Light' : 'Dark'}
+                </button>
+              </>
+            )}
 
           {showCloseButton && mode !== 'auto-compact' && (
             <>

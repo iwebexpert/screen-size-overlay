@@ -22,20 +22,15 @@ export interface CustomTheme {
 }
 
 export type ThemeStyles = Required<CustomTheme>
-export type Theme =
-  | 'light'
-  | 'dark'
-  | 'green'
-  | 'indigo'
-  | 'orange'
-  | 'scheme'
-  | 'class'
-  | CustomTheme
 
-export interface ThemeResult {
-  themeName: 'light' | 'dark' | 'custom'
-  styles: ThemeStyles
-}
+export type Theme =
+  | CustomTheme
+  | {
+      light: CustomTheme
+      dark: CustomTheme
+      switchMode?: 'manual' | 'scheme' | 'class' // Default: 'manual'
+      switchModeClassName?: string // Default: 'dark'
+    }
 
 export type XPosition = 'left' | 'right'
 export type YPosition = 'top' | 'bottom'
