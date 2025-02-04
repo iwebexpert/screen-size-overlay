@@ -1,5 +1,12 @@
-export interface Breakpoints {
-  [key: string]: [number, number]
+export type BreakpointDefinition =
+  | number
+  | {
+      value: number
+      label?: string
+    }
+
+export type Breakpoints = {
+  [key: string]: BreakpointDefinition
 }
 
 export type BreakpointsPreset =
