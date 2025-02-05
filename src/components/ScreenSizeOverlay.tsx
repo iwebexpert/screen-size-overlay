@@ -137,11 +137,18 @@ export default function ScreenSizeOverlay({
     ...getPositionStyles(position),
   }
 
+  const containerEventHandlers =
+    mode === 'auto-compact' || mode === 'auto-hide'
+      ? {
+          onMouseEnter: handleMouseEnter,
+          onMouseLeave: handleMouseLeave,
+        }
+      : {}
+
   return (
     <div
       style={{ ...defaultContainerStyles, ...containerStyles }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}>
+      {...containerEventHandlers}>
       {mode === 'auto-compact' && !showFullOverlay ? (
         <div
           className={`${styles.overlay}`}
