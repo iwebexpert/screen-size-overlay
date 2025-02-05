@@ -1,11 +1,16 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import type { Theme, ThemeStyles } from '../types'
-import { darkTheme, generateCustomTheme } from '../themes'
+import { generateCustomTheme } from '../themes'
 
 export function useTheme(theme: Theme) {
-  const [currentTheme, setCurrentTheme] = useState<ThemeStyles>(darkTheme)
-  const manualModeRef = useRef<'light' | 'dark'>('dark')
   const isDualTheme = 'light' in theme && 'dark' in theme
+  const defaultThemeMode =
+    'defaultTheme' in theme && theme.defaultTheme === 'dark' ? 'dark' : 'light'
+
+  const [currentTheme, setCurrentTheme] = useState<ThemeStyles>(() =>
+    generateCustomTheme(isDualTheme ? theme[defaultThemeMode] : theme)
+  )
+  const manualModeRef = useRef<'light' | 'dark'>(defaultThemeMode)
 
   const applyTheme = useCallback(() => {
     if (!isDualTheme) {
@@ -42,9 +47,7 @@ export function useTheme(theme: Theme) {
     }
 
     setCurrentTheme(
-      manualModeRef.current === 'light'
-        ? generateCustomTheme(light)
-        : generateCustomTheme(dark)
+      generateCustomTheme(manualModeRef.current === 'light' ? light : dark)
     )
   }, [theme, isDualTheme])
 
@@ -59,10 +62,15 @@ export function useTheme(theme: Theme) {
     applyTheme()
   }, [applyTheme])
 
+  const currentSwitchMode = isDualTheme
+    ? (theme.switchMode ?? 'manual')
+    : undefined
+
   return {
     themeStyles: currentTheme,
     toggleTheme: isDualTheme ? toggleTheme : undefined,
     currentMode: isDualTheme ? manualModeRef.current : undefined,
+    switchMode: currentSwitchMode,
     isDualTheme,
   }
 }

@@ -30,14 +30,13 @@ function App() {
             breakpoints="tailwind"
             // Example of custom breakpoints:
             // breakpoints={{
-            //   XS: [0, 639],
-            //   SM: [640, 767],
-            //   MD: [768, 1023],
-            //   LG: [1024, 1279],
-            //   XL: [1280, 1535],
-            //   '2XL': [1536, Infinity],
+            //   XS: 0,
+            //   SM: 640,
+            //   MD: 768,
+            //   LG: 1024,
+            //   XL: 1280,
+            //   '2XL': 1536,
             // }}
-
             // Locale: 'en-US' | 'ru-RU' | 'es-ES' (default: 'en-US')
             locale="ru-RU"
             // Position of the overlay on the screen: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'relative' (by default 'bottom-right')
@@ -68,6 +67,7 @@ function App() {
             theme={{
               light: customLightTealTheme,
               dark: darkTealTheme,
+              // defaultTheme: 'dark',
               switchMode: 'manual',
 
               // switchMode: 'class',

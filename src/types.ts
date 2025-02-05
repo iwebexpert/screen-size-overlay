@@ -35,6 +35,7 @@ export type Theme =
   | {
       light: CustomTheme
       dark: CustomTheme
+      defaultTheme?: 'light' | 'dark' // Default: 'light'
       switchMode?: 'manual' | 'scheme' | 'class' // Default: 'manual'
       switchModeClassName?: string // Default: 'dark'
     }

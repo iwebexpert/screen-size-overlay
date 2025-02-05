@@ -54,7 +54,8 @@ export default function ScreenSizeOverlay({
   displayDuration = 2000,
 }: ScreenSizeOverlayProps) {
   const displaySize = useWindowSize()
-  const { themeStyles, toggleTheme, currentMode, isDualTheme } = useTheme(theme)
+  const { themeStyles, toggleTheme, currentMode, isDualTheme, switchMode } =
+    useTheme(theme)
 
   const {
     visible,
@@ -175,26 +176,23 @@ export default function ScreenSizeOverlay({
           {prevBreakpointUI}
           {nextBreakpointUI}
 
-          {isDualTheme &&
-            toggleTheme &&
-            'switchMode' in theme &&
-            theme.switchMode === 'manual' && (
-              <>
-                <Separator color={themeStyles.separatorColor} />
-                <button
-                  className={styles.closeButton}
-                  style={{
-                    fontSize: sizeStyles[size].fontSize,
-                    color: themeStyles.closeButtonColor,
-                  }}
-                  onClick={toggleTheme}
-                  aria-label={t('toggleTheme', locale)}>
-                  {currentMode === 'light'
-                    ? t('light', locale)
-                    : t('dark', locale)}
-                </button>
-              </>
-            )}
+          {isDualTheme && toggleTheme && switchMode === 'manual' && (
+            <>
+              <Separator color={themeStyles.separatorColor} />
+              <button
+                className={styles.closeButton}
+                style={{
+                  fontSize: sizeStyles[size].fontSize,
+                  color: themeStyles.closeButtonColor,
+                }}
+                onClick={toggleTheme}
+                aria-label={t('toggleTheme', locale)}>
+                {currentMode === 'light'
+                  ? t('light', locale)
+                  : t('dark', locale)}
+              </button>
+            </>
+          )}
 
           {showCloseButton && mode !== 'auto-compact' && (
             <>
