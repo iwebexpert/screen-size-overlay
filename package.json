@@ -3,13 +3,13 @@
   "description": "A lightweight React component that provides a screen size overlay, showing your screen size (width and height) alongside breakpoints. Supports presets (Tailwind, Bootstrap, Foundation, Bulma, MUI). Perfect for debugging screen size changes in responsive layouts",
   "version": "1.5.0",
   "types": "dist/index.d.ts",
-  "main": "dist/screen-size-overlay.umd.js",
   "module": "dist/screen-size-overlay.es.js",
+  "main": "dist/screen-size-overlay.cjs.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/screen-size-overlay.es.js",
-      "require": "./dist/screen-size-overlay.umd.js",
+      "require": "./dist/screen-size-overlay.cjs.js",
       "default": "./dist/screen-size-overlay.es.js"
     }
   },
