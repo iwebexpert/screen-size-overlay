@@ -7,8 +7,8 @@ import Separator from './Separator'
 import BreakpointDistance from './BreakpointDistance'
 import type {
   BreakpointsPreset,
+  Language,
   OverlayPosition,
-  SupportedLocale,
   Theme,
 } from '../types'
 import {
@@ -17,14 +17,15 @@ import {
 } from '../utils/breakpoints'
 import { useOverlayVisibility } from '../hooks/useOverlayVisibility'
 import { getPositionStyles, sizeStyles } from '../utils/styles'
-import { t } from '../utils/locale'
+import { t } from '../utils/translations'
 import styles from './ScreenSizeOverlay.module.css'
 
 interface ScreenSizeOverlayProps {
   enable?: boolean
   breakpoints?: BreakpointsPreset
   position?: OverlayPosition
-  locale?: SupportedLocale
+  locale?: Intl.LocalesArgument
+  language?: Language
   showPrevBreakpoint?: boolean
   showNextBreakpoint?: boolean
   showCloseButton?: boolean
@@ -43,6 +44,7 @@ export default function ScreenSizeOverlay({
   breakpoints = 'tailwind',
   position = 'bottom-right',
   locale = 'en-US',
+  language = 'en',
   showPrevBreakpoint = true,
   showNextBreakpoint = true,
   showCloseButton = true,
@@ -91,7 +93,7 @@ export default function ScreenSizeOverlay({
   const formattedFrameworkTitle =
     typeof breakpoints === 'string'
       ? breakpoints.charAt(0).toUpperCase() + breakpoints.slice(1)
-      : t('custom', locale)
+      : t('custom', language)
 
   // Create a string that highlights the current breakpoint by surrounding it with square brackets
   const highlightedBreakpoints = breakpointKeys
@@ -106,7 +108,7 @@ export default function ScreenSizeOverlay({
         breakpointKey={breakpointKeys[currentIndex - 1]}
         separatorColor={themeStyles.separatorColor}
         textClass={styles.mutedText}
-        locale={locale}
+        language={language}
       />
     ) : null
 
@@ -120,7 +122,7 @@ export default function ScreenSizeOverlay({
         breakpointKey={breakpointKeys[currentIndex + 1]}
         separatorColor={themeStyles.separatorColor}
         textClass={styles.mutedText}
-        locale={locale}
+        language={language}
       />
     ) : null
 
@@ -160,7 +162,7 @@ export default function ScreenSizeOverlay({
           }}>
           <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
             {currentBreakpoint === 'Unknown'
-              ? t('unknown', locale)
+              ? t('unknown', language)
               : currentBreakpoint}
           </span>
         </div>
@@ -178,7 +180,7 @@ export default function ScreenSizeOverlay({
           <Separator color={themeStyles.separatorColor} />
           <span title={`${formattedFrameworkTitle}: ${highlightedBreakpoints}`}>
             {currentBreakpoint === 'Unknown'
-              ? t('unknown', locale)
+              ? t('unknown', language)
               : currentBreakpoint}
           </span>
 
@@ -195,10 +197,10 @@ export default function ScreenSizeOverlay({
                   color: themeStyles.closeButtonColor,
                 }}
                 onClick={toggleTheme}
-                aria-label={t('toggleTheme', locale)}>
+                aria-label={t('toggleTheme', language)}>
                 {currentMode === 'light'
-                  ? t('light', locale)
-                  : t('dark', locale)}
+                  ? t('light', language)
+                  : t('dark', language)}
               </button>
             </>
           )}
@@ -213,7 +215,7 @@ export default function ScreenSizeOverlay({
                   color: themeStyles.closeButtonColor,
                 }}
                 onClick={() => setVisible(false)}
-                aria-label={t('close', locale)}>
+                aria-label={t('close', language)}>
                 ×
               </button>
             </>

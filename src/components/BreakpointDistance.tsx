@@ -1,7 +1,7 @@
 import React from 'react'
 import Separator from './Separator'
-import type { SupportedLocale } from '../types'
-import { t } from '../utils/locale'
+import type { Language } from '../types'
+import { t } from '../utils/translations'
 
 interface BreakpointDistanceProps {
   distance: number
@@ -9,7 +9,7 @@ interface BreakpointDistanceProps {
   breakpointKey: string
   separatorColor: string
   textClass: string
-  locale?: SupportedLocale
+  language?: Language
 }
 
 const BreakpointDistance: React.FC<BreakpointDistanceProps> = ({
@@ -18,12 +18,12 @@ const BreakpointDistance: React.FC<BreakpointDistanceProps> = ({
   breakpointKey,
   separatorColor,
   textClass,
-  locale = 'en-US',
+  language = 'en',
 }: BreakpointDistanceProps) => (
   <>
     <Separator color={separatorColor} />
     <span className={textClass}>
-      {`${prefix}${distance}px ${t('breakpointDistance', locale)} ${breakpointKey}`}
+      {`${prefix}${distance}px ${t('breakpointDistance', language)} ${breakpointKey}`}
     </span>
   </>
 )

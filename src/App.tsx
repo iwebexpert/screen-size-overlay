@@ -10,6 +10,9 @@ const ScreenSizeOverlay = lazy(() =>
 )
 
 function App() {
+  // Example of merging a base theme (lightTealTheme) with some custom overrides.
+  // You can customize properties like backgroundColor, fontFamily, textColor, etc.
+  // Here, the base theme is extended by changing the backgroundColor to '#b8fcbd'.
   const customLightTealTheme = mergeTheme(lightTealTheme, {
     backgroundColor: '#b8fcbd',
     // fontFamily: 'Arial, sans-serif',
@@ -23,10 +26,12 @@ function App() {
             // Controls whether the overlay is visible (default: true).
             // Useful if you only want the overlay active in development mode.
             enable={process.env.NODE_ENV === 'development'}
+            //
             // Breakpoints used to determine the current responsive behavior.
             // By default, Tailwind CSS breakpoints are used.
             // You can use one of the presets: 'tailwind', 'bootstrap', 'bootstrap4', 'bootstrap5', 'foundation', 'bulma', 'mui'
             // or provide custom breakpoints as an object.
+            //
             breakpoints="tailwind"
             // Example of custom breakpoints:
             // breakpoints={{
@@ -37,23 +42,38 @@ function App() {
             //   XL: 1280,
             //   '2XL': 1536,
             // }}
-            // Optional throttle delay in milliseconds (default: 100ms). Used to limit the frequency of updateSize calls.
-            throttleDelay={100}
-            // Locale: 'en-US' | 'ru-RU' | 'es-ES' (default: 'en-US')
-            locale="ru-RU"
+            //
+            // An optional throttle delay (in ms), defaulting to 100.
+            // This limits the frequency of window size updates during resize events.
+            // throttleDelay={100}
+            //
+            // Locale for number formatting (e.g., width and height). Default is 'en-US'.
+            // Examples: 'en-US', 'ru-RU', 'es-ES'.
+            locale="en-US"
+            //
+            // Language for UI translations within the overlay. Options: 'en', 'ru', 'es'.
+            // Default is 'en'.
+            language="en"
+            //
             // Position of the overlay on the screen: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'relative' (by default 'bottom-right')
             position="bottom-right"
+            //
             // Size of the overlay: 'sm' | 'md' | 'lg' | 'xl'| '2xl' (default: 'lg')
             size="lg"
+            //
             // If true, displays distance to the previous breakpoint (default: true)
             showPrevBreakpoint={true}
+            //
             // If true, displays distance to the next breakpoint (default: true)
             showNextBreakpoint={true}
+            //
             // If false, hides the close button in the overlay (default: true)
             showCloseButton={true}
+            //
             // Transparency level of the overlay.
             // A value between 0 (fully transparent) and 1 (fully opaque). Default is 1
             transparency={0.95}
+            //
             // Theme configuration for the overlay.
             // This can be:
             // 1. A single CustomTheme object (universal theme),
@@ -69,14 +89,18 @@ function App() {
             theme={{
               light: customLightTealTheme,
               dark: darkTealTheme,
-              // defaultTheme: 'dark',
+              // defaultTheme: 'dark', // Use if you'd like to start with the dark theme
               switchMode: 'manual',
 
               // switchMode: 'class',
               // switchModeClassName: 'dark',
             }}
-            // If you want a fully customized color scheme,
-            // pass a theme object instead of a preset value:
+            //
+            // If you only have a single theme object, simply pass it directly:
+            // The overlay will always use that theme and won't provide a toggle button.
+            // theme={darkTealTheme}
+            //
+            // Example of a fully customized theme:
             // theme={{
             //   backgroundColor: '#005204', // Overlay background color
             //   borderColor: '#032b00', // Overlay border color
@@ -85,21 +109,26 @@ function App() {
             //   closeButtonColor: '#2e7400', // Color for the close button (if showCloseButton=true)
             //   fontFamily: 'Arial, sans-serif', // Font family for all text in the overlay
             // }}
-
+            //
             // Custom container styles.
             // These styles are applied to the outer container of the overlay and can be used to override the default positioning and z-index.
             // By default, z-index is set to 1000.
             containerStyles={{ zIndex: 1000, bottom: 16, right: 16 }}
+            //
             // Custom overlay styles.
             // These styles are applied directly to the overlay element, allowing further customization (e.g., font size, padding).
             // overlayStyles={{ fontSize: '10px' }}
-
-            // New in 1.5.0: Controls when the overlay is shown or hidden
-            // 'visible' (always on), 'auto-hide' (appears on resize, hides after displayDuration), or 'auto-compact' (shows only the breakpoint label unless hovered or resizing).
+            //
+            // Overlay display mode:
+            //  'visible': always visible,
+            //  'auto-hide': appears on resize, then hides after displayDuration,
+            //  'auto-compact': only shows the breakpoint label unless hovered (or resizing).
+            // Default is 'visible'.
             // mode="auto-compact"
-            // New in 1.5.0: Time (in ms) the overlay remains visible in 'auto-hide' and 'auto-compact' modes.
-            // Default: 2000 ms
-            displayDuration={2000}
+            //
+            // The time in milliseconds the overlay remains visible in 'auto-hide' and 'auto-compact' modes.
+            // Default is 2000 ms.
+            // displayDuration={2000}
           />
         )}
       </Suspense>

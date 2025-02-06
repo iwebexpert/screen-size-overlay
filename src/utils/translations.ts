@@ -1,7 +1,7 @@
-import type { SupportedLocale } from '../types'
+import type { Language } from '../types'
 
-const translations: Record<SupportedLocale, Record<string, string>> = {
-  'en-US': {
+const translations: Record<Language, Record<string, string>> = {
+  en: {
     close: 'Close',
     custom: 'Custom',
     toggleTheme: 'Toggle Theme',
@@ -10,7 +10,7 @@ const translations: Record<SupportedLocale, Record<string, string>> = {
     unknown: 'Unknown',
     breakpointDistance: 'to',
   },
-  'ru-RU': {
+  ru: {
     close: 'Закрыть',
     custom: 'Пользовательский',
     toggleTheme: 'Смена темы',
@@ -19,7 +19,7 @@ const translations: Record<SupportedLocale, Record<string, string>> = {
     unknown: 'Отсутствует',
     breakpointDistance: 'до',
   },
-  'es-ES': {
+  es: {
     close: 'Cerrar',
     custom: 'Personalizado',
     toggleTheme: 'Cambiar tema',
@@ -31,8 +31,8 @@ const translations: Record<SupportedLocale, Record<string, string>> = {
 }
 
 export function t(
-  key: keyof (typeof translations)['en-US'],
-  locale: SupportedLocale = 'en-US'
+  key: keyof (typeof translations)['en'],
+  locale: Language = 'en'
 ) {
-  return translations[locale]?.[key] ?? translations['en-US'][key] ?? key
+  return translations[locale]?.[key] ?? translations['en'][key] ?? key
 }
