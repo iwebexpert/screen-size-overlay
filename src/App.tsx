@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { darkTealTheme, lightTealTheme, mergeTheme } from './themes'
+// import CustomOverlay from './components/CustomOverlay'
 // import ScreenSizeOverlay from './components/ScreenSizeOverlay'
 
 // Lazy-load the overlay component
@@ -132,6 +133,9 @@ function App() {
           />
         )}
       </Suspense>
+
+      {/* <hr />
+      <CustomOverlay /> */}
     </div>
   )
 }
