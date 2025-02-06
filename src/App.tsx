@@ -37,6 +37,8 @@ function App() {
             //   XL: 1280,
             //   '2XL': 1536,
             // }}
+            // Optional throttle delay in milliseconds (default: 100ms). Used to limit the frequency of updateSize calls.
+            throttleDelay={100}
             // Locale: 'en-US' | 'ru-RU' | 'es-ES' (default: 'en-US')
             locale="ru-RU"
             // Position of the overlay on the screen: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'relative' (by default 'bottom-right')

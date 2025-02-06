@@ -17,8 +17,8 @@ import {
 } from '../utils/breakpoints'
 import { useOverlayVisibility } from '../hooks/useOverlayVisibility'
 import { getPositionStyles, sizeStyles } from '../utils/styles'
-import styles from './ScreenSizeOverlay.module.css'
 import { t } from '../utils/locale'
+import styles from './ScreenSizeOverlay.module.css'
 
 interface ScreenSizeOverlayProps {
   enable?: boolean
@@ -35,6 +35,7 @@ interface ScreenSizeOverlayProps {
   theme?: Theme
   mode?: 'visible' | 'auto-hide' | 'auto-compact'
   displayDuration?: number
+  throttleDelay?: number
 }
 
 export default function ScreenSizeOverlay({
@@ -50,10 +51,11 @@ export default function ScreenSizeOverlay({
   transparency = 1,
   containerStyles,
   overlayStyles,
+  throttleDelay = 100,
   mode = 'visible',
   displayDuration = 2000,
 }: ScreenSizeOverlayProps) {
-  const displaySize = useWindowSize()
+  const displaySize = useWindowSize(throttleDelay)
   const { themeStyles, toggleTheme, currentMode, isDualTheme, switchMode } =
     useTheme(theme)
 
@@ -138,7 +140,7 @@ export default function ScreenSizeOverlay({
   }
 
   const containerEventHandlers =
-    mode === 'auto-compact' || mode === 'auto-hide'
+    mode === 'auto-hide' || mode === 'auto-compact'
       ? {
           onMouseEnter: handleMouseEnter,
           onMouseLeave: handleMouseLeave,
@@ -201,7 +203,7 @@ export default function ScreenSizeOverlay({
             </>
           )}
 
-          {showCloseButton && mode !== 'auto-compact' && (
+          {showCloseButton && mode === 'visible' && (
             <>
               <Separator color={themeStyles.separatorColor} />
               <button
