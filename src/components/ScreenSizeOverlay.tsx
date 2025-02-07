@@ -48,7 +48,7 @@ export default function ScreenSizeOverlay({
   showPrevBreakpoint = true,
   showNextBreakpoint = true,
   showCloseButton = true,
-  theme = {},
+  theme = 'darkIndigo',
   size = 'lg',
   transparency = 1,
   containerStyles,

@@ -1,6 +1,6 @@
 export { lightTheme } from './light'
 export { darkTheme } from './dark'
-export { generateCustomTheme, mergeTheme } from './utils'
+export { mergeTheme } from './utils'
 
 // Custom themes
 export { lightGreenTheme, darkGreenTheme } from './green'

@@ -1,64 +1,75 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
-import type { Theme, ThemeStyles } from '../types'
-import { generateCustomTheme } from '../themes'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
+import type { Theme, ThemeStyles, DualTheme } from '../types'
+import { resolveThemeStyles } from '../themes/utils'
 
 export function useTheme(theme: Theme) {
-  const isValidTheme = theme && typeof theme === 'object' && theme !== null
-  const isDualTheme = isValidTheme && 'light' in theme && 'dark' in theme
+  // Initially resolve the theme styles.
+  const initialThemeStyles = useMemo(() => resolveThemeStyles(theme), [])
 
-  const defaultThemeMode =
-    isValidTheme && 'defaultTheme' in theme && theme.defaultTheme === 'dark'
-      ? 'dark'
-      : 'light'
+  const [currentTheme, setCurrentTheme] =
+    useState<ThemeStyles>(initialThemeStyles)
 
-  const [currentTheme, setCurrentTheme] = useState<ThemeStyles>(() =>
-    generateCustomTheme(isDualTheme ? theme[defaultThemeMode] : theme)
-  )
+  // Determine if we have a dual theme: one that contains both 'light' and 'dark' keys.
+  const isDualTheme = useMemo(() => {
+    return (
+      theme &&
+      typeof theme === 'object' &&
+      theme !== null &&
+      'light' in theme &&
+      'dark' in theme
+    )
+  }, [])
+
+  // Determine default mode for dual themes. For single themes, default is always 'light'.
+  const defaultThemeMode: 'light' | 'dark' = useMemo(() => {
+    if (!isDualTheme) return 'light'
+    const dualTheme = theme as DualTheme
+    return dualTheme.defaultTheme === 'dark' ? 'dark' : 'light'
+  }, [isDualTheme])
+
+  // A ref to track manual theme mode for dual themes.
   const manualModeRef = useRef<'light' | 'dark'>(defaultThemeMode)
 
+  // Apply the theme based on the current mode.
   const applyTheme = useCallback(() => {
+    // For a single theme (or if theme is not dual), simply resolve it.
     if (!isDualTheme) {
-      setCurrentTheme(generateCustomTheme(theme))
+      setCurrentTheme(resolveThemeStyles(theme))
       return
     }
 
+    // For dual themes, cast theme to DualTheme and extract necessary properties.
+    const dualTheme = theme as DualTheme
     const {
       light,
       dark,
       switchMode = 'manual',
       switchModeClassName = 'dark',
-    } = theme
+    } = dualTheme
 
+    let newTheme: ThemeStyles
     if (switchMode === 'scheme') {
       const prefersDark = window.matchMedia(
         '(prefers-color-scheme: dark)'
       ).matches
-      setCurrentTheme(
-        prefersDark ? generateCustomTheme(dark) : generateCustomTheme(light)
-      )
-      return
-    }
-
-    if (switchMode === 'class') {
+      newTheme = resolveThemeStyles(prefersDark ? dark : light)
+    } else if (switchMode === 'class') {
       const isDark =
         document.documentElement.classList.contains(switchModeClassName) ||
         document.body.classList.contains(switchModeClassName)
-
-      setCurrentTheme(
-        isDark ? generateCustomTheme(dark) : generateCustomTheme(light)
+      newTheme = resolveThemeStyles(isDark ? dark : light)
+    } else {
+      // Manual switching.
+      newTheme = resolveThemeStyles(
+        manualModeRef.current === 'light' ? light : dark
       )
-      return
     }
-
-    setCurrentTheme(
-      generateCustomTheme(manualModeRef.current === 'light' ? light : dark)
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setCurrentTheme(newTheme)
   }, [isDualTheme])
 
   const toggleTheme = useCallback(() => {
     if (!isDualTheme) return
-
     manualModeRef.current = manualModeRef.current === 'light' ? 'dark' : 'light'
     applyTheme()
   }, [applyTheme, isDualTheme])
@@ -68,7 +79,7 @@ export function useTheme(theme: Theme) {
   }, [applyTheme])
 
   const currentSwitchMode = isDualTheme
-    ? (theme.switchMode ?? 'manual')
+    ? ((theme as DualTheme).switchMode ?? 'manual')
     : undefined
 
   return {

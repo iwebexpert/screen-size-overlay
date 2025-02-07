@@ -19,6 +19,7 @@ export type BreakpointsPreset =
   | 'mui'
   | Breakpoints
 
+export type ThemePreset = 'light' | 'dark' | 'lightIndigo' | 'darkIndigo'
 export interface CustomTheme {
   backgroundColor?: string
   borderColor?: string
@@ -29,16 +30,18 @@ export interface CustomTheme {
 }
 
 export type ThemeStyles = Required<CustomTheme>
+export type SingleTheme = ThemePreset | CustomTheme
+//Dual-theme configuration (supports switching between two themes)
+export type DualTheme = {
+  light: SingleTheme
+  dark: SingleTheme
+  defaultTheme?: 'light' | 'dark' // Default: 'light'
+  switchMode?: 'manual' | 'scheme' | 'class' // Default: 'manual'
+  switchModeClassName?: string // Default: 'dark'
+}
 
-export type Theme =
-  | CustomTheme
-  | {
-      light: CustomTheme
-      dark: CustomTheme
-      defaultTheme?: 'light' | 'dark' // Default: 'light'
-      switchMode?: 'manual' | 'scheme' | 'class' // Default: 'manual'
-      switchModeClassName?: string // Default: 'dark'
-    }
+// The final Theme type (supports single themes, dual themes, and presets)
+export type Theme = SingleTheme | DualTheme
 
 export type XPosition = 'left' | 'right'
 export type YPosition = 'top' | 'bottom'

@@ -99,6 +99,7 @@ function App() {
             //
             // If you only have a single theme object, simply pass it directly:
             // The overlay will always use that theme and won't provide a toggle button.
+            // theme="light" // light, dark, lightIndigo and darkIndigo are built-in presets.
             // theme={darkTealTheme}
             //
             // Example of a fully customized theme:
