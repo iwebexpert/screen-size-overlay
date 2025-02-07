@@ -3,9 +3,13 @@ import type { Theme, ThemeStyles } from '../types'
 import { generateCustomTheme } from '../themes'
 
 export function useTheme(theme: Theme) {
-  const isDualTheme = 'light' in theme && 'dark' in theme
+  const isValidTheme = theme && typeof theme === 'object' && theme !== null
+  const isDualTheme = isValidTheme && 'light' in theme && 'dark' in theme
+
   const defaultThemeMode =
-    'defaultTheme' in theme && theme.defaultTheme === 'dark' ? 'dark' : 'light'
+    isValidTheme && 'defaultTheme' in theme && theme.defaultTheme === 'dark'
+      ? 'dark'
+      : 'light'
 
   const [currentTheme, setCurrentTheme] = useState<ThemeStyles>(() =>
     generateCustomTheme(isDualTheme ? theme[defaultThemeMode] : theme)
@@ -49,7 +53,8 @@ export function useTheme(theme: Theme) {
     setCurrentTheme(
       generateCustomTheme(manualModeRef.current === 'light' ? light : dark)
     )
-  }, [theme, isDualTheme])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDualTheme])
 
   const toggleTheme = useCallback(() => {
     if (!isDualTheme) return
