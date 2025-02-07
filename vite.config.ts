@@ -17,6 +17,7 @@ export default defineConfig({
     dts({
       rollupTypes: true,
       tsconfigPath: './tsconfig.build.json',
+      exclude: ['**/*.test.{ts,tsx}', '**/*.stories.{ts,tsx}'],
     }),
     // visualizer({
     //   filename: './dist/stats.html',
@@ -34,16 +35,18 @@ export default defineConfig({
   },
   build: {
     minify: 'esbuild',
+    emptyOutDir: true,
+    cssCodeSplit: false,
     copyPublicDir: false,
     sourcemap: false,
     lib: {
       entry: 'src/index.ts',
       name: 'ScreenSizeOverlay',
-      formats: ['es', 'umd'],
+      formats: ['es', 'cjs'],
       fileName: (format) => `screen-size-overlay.${format}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', 'tailwindcss'],
+      external: ['react', 'react-dom', 'react/jsx-runtime'],
       plugins: [preserveDirectives()],
       output: {
         globals: {

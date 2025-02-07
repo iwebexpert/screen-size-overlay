@@ -1,70 +1,115 @@
 import type { Breakpoints, BreakpointsPreset } from '../types'
 
 /**
- * Determines the current breakpoint based on the screen width.
- * @param width - Current screen width.
- * @param breakpoints - Set of defined breakpoints.
- * @returns The name of the current breakpoint.
- */
-const getCurrentBreakpoint = (
-  width: number,
-  breakpoints: Breakpoints
-): string => {
-  for (const [key, [min, max]] of Object.entries(breakpoints)) {
-    if (width >= min && width <= max) {
-      return key
-    }
-  }
-  return 'Unknown'
-}
-
-/**
- * Calculates the current breakpoint, previous breakpoint, next breakpoint,
- * distance to the previous breakpoint, distance to the next breakpoint, and
- * the index of the current breakpoint given the current screen width.
- * @param width - Current screen width.
- * @param resolvedBreakpoints - Set of defined breakpoints.
- * @returns An object containing the following information:
- *   - currentBreakpoint: The name of the current breakpoint.
- *   - prevBreakpoint: The name of the previous breakpoint.
- *   - nextBreakpoint: The name of the next breakpoint.
- *   - distanceToPrev: The distance in pixels from the current screen width to the
- *     previous breakpoint.
- *   - distanceToNext: The distance in pixels from the current screen width to the next
- *     breakpoint.
- *   - breakpointKeys: Array of all the breakpoint keys.
- *   - currentIndex: The index of the current breakpoint in the breakpointKeys array.
+ * Calculates the current breakpoint and the distances (in pixels) to the previous and next breakpoints.
+ * The breakpoints are defined by a single number representing the minimum value of the breakpoint.
+ * The maximum value for each breakpoint is computed as the next breakpoint's minimum minus one, or Infinity for the last one.
+ * If the provided width falls within a breakpoint interval, that breakpoint is returned.
+ * Otherwise, currentBreakpoint is set to "Unknown", and the function returns the nearest previous and/or next breakpoints.
+ *
+ * @param width - The current width to evaluate.
+ * @param breakpoints - An object mapping breakpoint keys to a number (or an object with {value, label?}).
+ * @returns An object containing:
+ *   - currentBreakpoint: the matching breakpoint label or "Unknown" if none match,
+ *   - currentIndex: the index of the matching breakpoint (or -1 if not found),
+ *   - distanceToPrev: distance in pixels from width to the previous breakpoint (if available),
+ *   - distanceToNext: distance in pixels from width to the next breakpoint (if available),
+ *   - prevBreakpointKey: the label of the previous breakpoint (if available),
+ *   - nextBreakpointKey: the label of the next breakpoint (if available),
+ *   - breakpointKeys: an array of breakpoint labels sorted by their minimum value.
  */
 export function calculateBreakpointDistances(
   width: number,
-  resolvedBreakpoints: { [key: string]: [number, number] }
+  breakpoints: Breakpoints
 ) {
-  const breakpointKeys = Object.keys(resolvedBreakpoints)
-  const currentBreakpoint = getCurrentBreakpoint(width, resolvedBreakpoints)
+  // Convert the breakpoints object into an array with structure: { key, min, label }.
+  const entries = Object.entries(breakpoints).map(([key, bp]) => {
+    if (typeof bp === 'number') {
+      return { key, min: bp, label: key }
+    } else {
+      return { key, min: bp.value, label: bp.label ?? key }
+    }
+  })
 
-  const currentIndex = breakpointKeys.findIndex(
-    (key) => key === currentBreakpoint
+  // Sort the entries by the min value.
+  const sortedEntries = entries.sort((a, b) => a.min - b.min)
+
+  // Compute intervals: for each entry, max is the next entry's min minus 1, or Infinity for the last entry.
+  const intervals = sortedEntries.map((entry, index, arr) => {
+    const max = index < arr.length - 1 ? arr[index + 1].min - 1 : Infinity
+    return { ...entry, max }
+  })
+
+  let currentBreakpoint = 'Unknown'
+  let currentIndex = -1
+  let distanceToPrev: number | null = null
+  let distanceToNext: number | null = null
+  let prevBreakpointKey: string | null = null
+  let nextBreakpointKey: string | null = null
+
+  // Attempt to find an interval that includes the given width.
+  const matchIndex = intervals.findIndex(
+    ({ min, max }) => width >= min && width <= max
   )
-  const prevBreakpoint =
-    currentIndex > 0
-      ? resolvedBreakpoints[breakpointKeys[currentIndex - 1]][1]
-      : null
-  const nextBreakpoint =
-    currentIndex < breakpointKeys.length - 1
-      ? resolvedBreakpoints[breakpointKeys[currentIndex + 1]][0]
-      : null
 
-  const distanceToPrev = prevBreakpoint !== null ? width - prevBreakpoint : null
-  const distanceToNext = nextBreakpoint !== null ? nextBreakpoint - width : null
+  if (matchIndex !== -1) {
+    // Width falls within an interval.
+    currentBreakpoint = intervals[matchIndex].label
+    currentIndex = matchIndex
+
+    // Calculate the distance to the previous breakpoint, if available.
+    if (matchIndex > 0) {
+      distanceToPrev = width - intervals[matchIndex - 1].max
+      prevBreakpointKey = intervals[matchIndex - 1].label
+    }
+
+    // Calculate the distance to the next breakpoint, if available.
+    if (matchIndex < intervals.length - 1) {
+      distanceToNext = intervals[matchIndex + 1].min - width
+      nextBreakpointKey = intervals[matchIndex + 1].label
+    }
+  } else {
+    // Width does not fall within any interval.
+    // Find the previous candidate: the last interval whose max is less than width.
+    let prevCandidate: { index: number; distance: number } | null = null
+    for (let i = intervals.length - 1; i >= 0; i--) {
+      if (width > intervals[i].max) {
+        prevCandidate = { index: i, distance: width - intervals[i].max }
+        break // First found in reverse order is the closest below.
+      }
+    }
+
+    // Find the next candidate: the first interval whose min is greater than width.
+    let nextCandidate: { index: number; distance: number } | null = null
+    for (let i = 0; i < intervals.length; i++) {
+      if (width < intervals[i].min) {
+        nextCandidate = { index: i, distance: intervals[i].min - width }
+        break // First found is the closest above.
+      }
+    }
+
+    if (prevCandidate) {
+      distanceToPrev = prevCandidate.distance
+      prevBreakpointKey = intervals[prevCandidate.index].label
+    }
+    if (nextCandidate) {
+      distanceToNext = nextCandidate.distance
+      nextBreakpointKey = intervals[nextCandidate.index].label
+    }
+    // currentBreakpoint remains "Unknown" and currentIndex stays -1.
+  }
+
+  // Prepare an array of breakpoint labels.
+  const breakpointKeys = intervals.map((i) => i.label)
 
   return {
     currentBreakpoint,
-    prevBreakpoint,
-    nextBreakpoint,
+    currentIndex,
     distanceToPrev,
     distanceToNext,
+    prevBreakpointKey,
+    nextBreakpointKey,
     breakpointKeys,
-    currentIndex,
   }
 }
 
@@ -95,51 +140,51 @@ export const resolveBreakpoints = (
 }
 
 export const tailwindBreakpoints: Breakpoints = {
-  XS: [0, 639],
-  SM: [640, 767],
-  MD: [768, 1023],
-  LG: [1024, 1279],
-  XL: [1280, 1535],
-  '2XL': [1536, Infinity],
+  XS: 0,
+  SM: 640,
+  MD: 768,
+  LG: 1024,
+  XL: 1280,
+  '2XL': 1536,
 }
 
 export const bootstrap4Breakpoints: Breakpoints = {
-  XS: [0, 575],
-  SM: [576, 767],
-  MD: [768, 991],
-  LG: [992, 1199],
-  XL: [1200, Infinity],
+  XS: 0,
+  SM: 576,
+  MD: 768,
+  LG: 992,
+  XL: 1200,
 }
 
 export const bootstrap5Breakpoints: Breakpoints = {
-  XS: [0, 575],
-  SM: [576, 767],
-  MD: [768, 991],
-  LG: [992, 1199],
-  XL: [1200, 1399],
-  XXL: [1400, Infinity],
+  XS: 0,
+  SM: 576,
+  MD: 768,
+  LG: 992,
+  XL: 1200,
+  XXL: 1400,
 }
 
 export const foundationBreakpoints: Breakpoints = {
-  Small: [0, 639],
-  Medium: [640, 1023],
-  Large: [1024, 1199],
-  XLarge: [1200, 1439],
-  XXLarge: [1440, Infinity],
+  Small: 0,
+  Medium: 640,
+  Large: 1024,
+  XLarge: 1200,
+  XXLarge: 1440,
 }
 
 export const bulmaBreakpoints: Breakpoints = {
-  Mobile: [0, 768],
-  Tablet: [769, 1023],
-  Desktop: [1024, 1215],
-  Widescreen: [1216, 1407],
-  FullHD: [1408, Infinity],
+  Mobile: 0,
+  Tablet: 769,
+  Desktop: 1024,
+  Widescreen: 1216,
+  FullHD: 1408,
 }
 
 export const muiBreakpoints: Breakpoints = {
-  XS: [0, 599],
-  SM: [600, 899],
-  MD: [900, 1199],
-  LG: [1200, 1535],
-  XL: [1536, Infinity],
+  XS: 0,
+  SM: 600,
+  MD: 900,
+  LG: 1200,
+  XL: 1536,
 }

@@ -1,3 +1,88 @@
+## 2.1.0 (2025-02-08)
+
+1. **Preinstalled Themes**
+
+   - `ThemePreset` now only includes `'light'`, `'dark'`, `'lightIndigo'`, and `'darkIndigo'`.
+   - If you need additional themes, import them separately to preserve proper tree-shaking.
+
+2. **Improved `useTheme` Hook**
+
+   - Optimized for fewer re-renders when passing an object-based theme, reducing unnecessary updates.
+
+3. **Default Theme Updated**
+   - If no `theme` prop is provided, the overlay now uses **`darkIndigo`** by default.
+
+## 2.0.0 (2025-02-07)
+
+### Breaking Changes
+
+1. **New Custom Breakpoints Format**
+
+   - Instead of `[min, max]` ranges, you now define breakpoints using a **single numeric value** for the starting width.
+   - Example:
+
+     ```js
+     // Outdated format (removed):
+     // XS: [0, 639],
+     // SM: [640, 767],
+     // MD: [768, 1023],
+     // etc.
+
+     // New format:
+     breakpoints={{
+       XS: 0,
+       SM: 640,
+       MD: 768,
+       LG: 1024,
+       XL: 1280,
+       '2XL': 1536,
+     }}
+     ```
+
+   - **Sorting** is now built-in, so the order of breakpoints in your object does not matter.
+
+### Features
+
+1. **Fixed Distance Calculation**
+
+   - If breakpoints were out of order, distances to the nearest breakpoint could be incorrect. Now they are always sorted, ensuring proper distance calculations.
+
+2. **Throttle Delay for Performance**
+
+   - A new `throttleDelay` parameter (default: `100ms`) optimizes overlay updates on window resize, reducing re-renders and improving performance.
+   - You can customize the delay via `<ScreenSizeOverlay throttleDelay={200} />` or similar.
+
+3. **Over 10 New Themes and Tree Shaking**
+
+   - Added multiple built-in themes (e.g., teal, purple, orange, pink, etc.).
+   - These are exported separately, allowing **tree shaking** to exclude unused themes from the final bundle.
+
+4. **`locale` Prop for Number Formatting**
+
+   - Format screen dimensions (width/height) according to a specified locale (e.g., `'en-US'`, `'ru-RU'`, `'es-ES'`).
+
+5. **Language Support** (`'en'`, `'ru'`, `'es'`)
+
+   - Translate UI text (like labels and button text) using the new `language` prop.
+
+6. **Single or Multiple Themes**
+
+   - If you only provide **one** theme object, the overlay always uses that theme with no toggle.
+   - If you provide **two** themes (`light`, `dark`) plus `switchMode`, you can toggle or auto-detect.
+   - `switchModeClassName` looks for the specified class on **both** `<html>` and `<body>`.
+
+7. **Custom Hooks for a Fully Custom Overlay**
+
+   - You can now build your own overlay by using the **`useWindowSize`** and **`useBreakpointInfo`** hooks to access dimensions and breakpoint data independently.
+
+8. **`mergeTheme` Utility**
+
+   - A new function for creating a custom theme **based on an existing** built-in or user-defined theme.
+   - You can still provide a plain object for a completely custom theme, as in previous versions.
+
+9. **Documentation Updates**
+   - The README.md has been updated to reflect the new breakpoint format and expanded feature set, including examples of using custom hooks and themes.
+
 ## 1.5.0 (2025-02-02)
 
 ### Features
