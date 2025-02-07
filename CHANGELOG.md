@@ -1,3 +1,17 @@
+## 2.1.0 (2025-02-08)
+
+1. **Preinstalled Themes**
+
+   - `ThemePreset` now only includes `'light'`, `'dark'`, `'lightIndigo'`, and `'darkIndigo'`.
+   - If you need additional themes, import them separately to preserve proper tree-shaking.
+
+2. **Improved `useTheme` Hook**
+
+   - Optimized for fewer re-renders when passing an object-based theme, reducing unnecessary updates.
+
+3. **Default Theme Updated**
+   - If no `theme` prop is provided, the overlay now uses **`darkIndigo`** by default.
+
 ## 2.0.0 (2025-02-07)
 
 ### Breaking Changes

@@ -1,6 +1,7 @@
 # Screen Size Overlay
 
-> Perfect for debugging screen size changes in responsive layouts. Easy to integrate into any `React` or `Next.js` project.
+> Perfect for debugging screen size changes in responsive layouts.
+> Easy to integrate into any `React` or `Next.js` project.
 
 <p>
 <img src="docs/images/dark.png" alt="Dark Overlay" />
@@ -32,7 +33,8 @@ You can also build a fully custom overlay by using the library’s hooks such as
   - `scheme`: Follows the OS color scheme (prefers-color-scheme).
   - `class`: Detects a class (e.g., 'dark') on `<html>` or `<body>`.
 
-- **Customizable**: Includes Teal, Green, Blue, Purple, Orange, and more—each with Light/Dark variants. Extend or merge them as needed. Override container/overlay styles, toggle breakpoint distances, or provide single/dual themes with manual or automatic dark mode switching.
+- **Customizable**: Includes **four** preinstalled theme keywords — `'light'`, `'dark'`, `'lightIndigo'`, and `'darkIndigo'`. If you need other pairs (e.g., `'lightTealTheme'`, `'darkTealTheme'`), import them separately to preserve **tree-shaking**. You can also override container/overlay styles, toggle breakpoint distances, or provide single/dual themes with manual/automatic dark mode switching.
+
 - **Locales and Languages**:
 
   - `locale` for number formatting (e.g., `en-US`, `ru-RU`, `es-ES`).
@@ -144,6 +146,8 @@ export default function App() {
 ### Available Themes
 
 The library provides several `light/dark` theme pairs you can import individually.
+By default, only the keywords `light`, `dark`, `lightIndigo`, and `darkIndigo` are recognized automatically.
+If you need other themes (like `lightTealTheme` or `darkPinkTheme`), import them manually.
 
 **Tree shaking** ensures that **only** the themes you actually import are included in your final bundle—unused themes are excluded.
 
@@ -175,6 +179,8 @@ export default function App() {
     <div>
       <ScreenSizeOverlay
         breakpoints="tailwind"
+        // Use a built-in keyword ('light', 'dark', 'lightIndigo', or 'darkIndigo')
+        // theme="lightIndigo"
         // Single custom theme usage
         theme={darkTealTheme}
         mode="auto-hide"
@@ -258,25 +264,24 @@ When you only pass one theme object (as shown above), the overlay will remain wi
 
 ## 🧩 Props
 
-| **Prop**             | **Type**                                                                                                                  | **Default**      | **Description**                                                                                                                                                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enable`             | `boolean`                                                                                                                 | `true`           | Toggles whether the overlay is rendered. Useful for enabling it only in development.                                                                                                                                   |
-| `breakpoints`        | `'tailwind' \| 'bootstrap' \| 'bootstrap4' \| 'bootstrap5' \| 'foundation' \| 'bulma' \| 'mui' \| Record<string, number>` | `'tailwind'`     | Determines which breakpoints are used. Can be one of the built-in presets or a custom object (e.g., `{ XS: 0, SM: 640, MD: 768, ... }`).                                                                               |
-| `position`           | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'relative'`                                              | `'bottom-right'` | Chooses where the overlay is positioned on the screen. If `'relative'`, the overlay is positioned within its parent element.                                                                                           |
-| `locale`             | `string`                                                                                                                  | `'en-US'`        | Specifies the locale for number formatting (for displaying width/height). Examples: `'en-US'`, `'ru-RU'`, `'es-ES'`.                                                                                                   |
-| `language`           | `'en' \| 'ru' \| 'es'`                                                                                                    | `'en'`           | Language used for UI text translations within the overlay (e.g., labels for unknown breakpoints, close button text, etc.).                                                                                             |
-| `size`               | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'`                                                                                   | `'lg'`           | Determines the overlay's scale (font size, spacing, etc.).                                                                                                                                                             |
-| `showPrevBreakpoint` | `boolean`                                                                                                                 | `true`           | If true, shows the distance to the previous breakpoint.                                                                                                                                                                |
-| `showNextBreakpoint` | `boolean`                                                                                                                 | `true`           | If true, shows the distance to the next breakpoint.                                                                                                                                                                    |
-| `showCloseButton`    | `boolean`                                                                                                                 | `true`           | Displays (or hides) the close button in the overlay.                                                                                                                                                                   |
-| `transparency`       | `number`                                                                                                                  | `1`              | Sets the overlay's opacity (0 = fully transparent, 1 = fully opaque).                                                                                                                                                  |
-| `containerStyles`    | `React.CSSProperties`                                                                                                     | `{}`             | Additional inline styles for the **outer container** of the overlay (e.g., positioning, zIndex). By default, zIndex is set to 1000.                                                                                    |
-| `overlayStyles`      | `React.CSSProperties`                                                                                                     | `{}`             | Additional inline styles for the **overlay** element itself (e.g., custom fontSize, padding, etc.).                                                                                                                    |
-| `theme`              | <br/> **Single theme:** `CustomTheme` <br/> **Dual theme:** `{ light: CustomTheme; dark: CustomTheme; ... }`              | `{}`             | A single theme object, or a dual theme object (light/dark) supporting manual or automatic switching. Allows custom colors, fonts, and more.                                                                            |
-| `mode`               | `'visible' \| 'auto-hide' \| 'auto-compact'`                                                                              | `'visible'`      | Controls when the overlay is shown: <br/>• **`visible`**: Always displayed. <br/>• **`auto-hide`**: Appears on resize, hides after `displayDuration`. <br/>• **`auto-compact`**: Compact view unless hovered/resizing. |
-| `displayDuration`    | `number`                                                                                                                  | `2000`           | How long (ms) the overlay remains fully visible in `auto-hide` or `auto-compact` modes before hiding or collapsing.                                                                                                    |
-| `throttleDelay`      | `number`                                                                                                                  | `100`            | Throttle delay for window resize events (in ms). Limits how often screen size recalculations occur, enhancing performance.                                                                                             |
-|                      |
+| **Prop**             | **Type**                                                                                                                                                           | **Default**      | **Description**                                                                                                                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enable`             | `boolean`                                                                                                                                                          | `true`           | Toggles whether the overlay is rendered. Useful for enabling it only in development.                                                                                                                                |
+| `breakpoints`        | `'tailwind' \| 'bootstrap' \| 'bootstrap4' \| 'bootstrap5' \| 'foundation' \| 'bulma' \| 'mui' \| Record<string, number>`                                          | `'tailwind'`     | Determines which breakpoints are used. Can be one of the built-in presets or a custom object (e.g., `{ XS: 0, SM: 640, MD: 768, ... }`).                                                                            |
+| `position`           | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'relative'`                                                                                       | `'bottom-right'` | Chooses where the overlay is positioned on the screen. If `'relative'`, the overlay is positioned within its parent element.                                                                                        |
+| `locale`             | `string`                                                                                                                                                           | `'en-US'`        | Specifies the locale for number formatting (for displaying width/height). Examples: `'en-US'`, `'ru-RU'`, `'es-ES'`.                                                                                                |
+| `language`           | `'en' \| 'ru' \| 'es'`                                                                                                                                             | `'en'`           | Language used for UI text translations within the overlay (e.g., labels for unknown breakpoints, close button text, etc.).                                                                                          |
+| `size`               | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'`                                                                                                                            | `'lg'`           | Determines the overlay's scale (font size, spacing, etc.).                                                                                                                                                          |
+| `showPrevBreakpoint` | `boolean`                                                                                                                                                          | `true`           | If true, shows the distance to the previous breakpoint.                                                                                                                                                             |
+| `showNextBreakpoint` | `boolean`                                                                                                                                                          | `true`           | If true, shows the distance to the next breakpoint.                                                                                                                                                                 |
+| `showCloseButton`    | `boolean`                                                                                                                                                          | `true`           | Displays (or hides) the close button in the overlay.                                                                                                                                                                |
+| `transparency`       | `number`                                                                                                                                                           | `1`              | Sets the overlay's opacity (0 = fully transparent, 1 = fully opaque).                                                                                                                                               |
+| `containerStyles`    | `React.CSSProperties`                                                                                                                                              | `{}`             | Additional inline styles for the **outer container** of the overlay (e.g., positioning, zIndex). By default, zIndex is set to 1000.                                                                                 |
+| `overlayStyles`      | `React.CSSProperties`                                                                                                                                              | `{}`             | Additional inline styles for the **overlay** element itself (e.g., custom fontSize, padding, etc.).                                                                                                                 |
+| `theme`              | <br/> **Single theme:** `CustomTheme \| 'light' \| 'dark' \| 'lightIndigo' \| 'darkIndigo'` <br/> **Dual theme:** `{ light: CustomTheme; dark: CustomTheme; ... }` | `darkIndigo`     | A single theme object (custom or one of the four built-in keywords) or a dual theme object (light/dark) supporting manual or automatic switching. Allows custom colors, fonts, and more.                            |
+| `mode`               | `'visible' \| 'auto-hide' \| 'auto-compact'`                                                                                                                       | `'visible'`      | Controls when the overlay is shown: <br/>• **`visible`**: Always displayed <br/>• **`auto-hide`**: Appears on resize, hides after `displayDuration` <br/>• **`auto-compact`**: Compact view unless hovered/resizing |
+| `displayDuration`    | `number`                                                                                                                                                           | `2000`           | How long (ms) the overlay remains fully visible in `auto-hide` or `auto-compact` modes before hiding or collapsing.                                                                                                 |
+| `throttleDelay`      | `number`                                                                                                                                                           | `100`            | Throttle delay for window resize events (in ms). Limits how often screen size recalculations occur, enhancing performance.                                                                                          |
 
 ## 🛠️ Full Customization
 
@@ -359,6 +364,7 @@ Below is a more detailed example demonstrating the various props:
   //
   // If you only have a single theme object, simply pass it directly:
   // The overlay will always use that theme and won't provide a toggle button.
+  // theme="light" // light, dark, lightIndigo and darkIndigo are built-in presets.
   // theme={darkTealTheme}
   //
   // Example of a fully customized theme:
